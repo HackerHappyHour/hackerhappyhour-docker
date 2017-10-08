@@ -8,5 +8,15 @@ rvm:
 services:
   - docker
 
-script:
-  - bundle exec rake test
+stages:
+  - validation
+  - test
+
+jobs:
+  include:
+    - stage: validation
+      script: bundle exec rake syntax
+      script: bundle exec rake lint
+    - stage: test
+      script: bundle exec rake spec
+      script: bundle exec rake beaker
