@@ -1,0 +1,17 @@
+language: ruby
+before_install:
+  - rm Gemfile.lock || true
+rvm:
+  - 2.4
+
+stages:
+  - validation
+  - spec
+
+jobs:
+  include:
+    - stage: validation
+      script: bundle exec rake syntax
+      script: bundle exec rake lint
+    - stage: spec
+      script: bundle exec rake spec

@@ -48,7 +48,7 @@ describe 'docker', :type => :class do
       if osfamily == 'Ubuntu' or osfamily == 'Debian'
 
         it { should contain_class('apt') }
-        it { should contain_package('docker').with_name('docker-engine').with_ensure('present') }
+        it { should contain_package('docker').with_name('docker-ce').with_ensure('present') }
         it { should contain_apt__source('docker').with_location('http://apt.dockerproject.org/repo') }
         it { should contain_apt__pin('docker').with_origin('apt.dockerproject.org') }
         it { should contain_package('docker').with_install_options(nil) }
@@ -57,14 +57,14 @@ describe 'docker', :type => :class do
 
         context 'with a custom version' do
           let(:params) { {'version' => '0.5.5' } }
-          it { should contain_package('docker').with_ensure('0.5.5').with_name('docker-engine') }
+          it { should contain_package('docker').with_ensure('0.5.5').with_name('docker-ce') }
         end
 
         context 'with no upstream package source' do
           let(:params) { {'use_upstream_package_source' => false } }
           it { should_not contain_apt__source('docker') }
           it { should_not contain_apt__pin('docker') }
-          it { should contain_package('docker').with_name('docker-engine') }
+          it { should contain_package('docker').with_name('docker-ce') }
         end
 
         context 'with no upstream package source' do
@@ -179,11 +179,6 @@ describe 'docker', :type => :class do
         context 'with bridge param' do
           let(:params) {{ 'bridge' => 'br0' }}
           it { should contain_file('/etc/default/docker').with_content(/bridge br0/) }
-        end
-
-        context 'with custom service_name' do
-          let(:params) {{ 'service_name' => 'docker.io' }}
-          it { should contain_file('/etc/default/docker.io') }
         end
 
       end
@@ -319,14 +314,14 @@ describe 'docker', :type => :class do
           let(:params) { {
             'manage_package'              => true,
             'use_upstream_package_source' => false,
-            'package_name'                => 'docker-engine',
-            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm'
+            'package_name'                => 'docker-ce',
+            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm'
           } }
           it do
             should contain_package('docker').with(
               'ensure' => 'present',
-              'source' => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm',
-              'name'   => 'docker-engine'
+              'source' => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm',
+              'name'   => 'docker-ce'
             )
           end
         end
@@ -335,15 +330,15 @@ describe 'docker', :type => :class do
           let(:params) { {
             'manage_package'              => true,
             'use_upstream_package_source' => false,
-            'package_name'                => 'docker-engine',
-            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm',
+            'package_name'                => 'docker-ce',
+            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm',
             'repo_opt'                    => '--enablerepo=rhel7-extras'
           } }
           it do
             should contain_package('docker').with(
               'ensure'          => 'present',
-              'source'          => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm',
-              'name'            => 'docker-engine',
+              'source'          => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm',
+              'name'            => 'docker-ce',
               'install_options' => '--enablerepo=rhel7-extras'
             )
           end
@@ -353,14 +348,14 @@ describe 'docker', :type => :class do
           let(:params) { {
             'manage_package'              => true,
             'use_upstream_package_source' => false,
-            'package_name'                => 'docker-engine',
-            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm'
+            'package_name'                => 'docker-ce',
+            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm'
           } }
           it do
             should contain_package('docker').with(
               'ensure'          => 'present',
-              'source'          => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm',
-              'name'            => 'docker-engine',
+              'source'          => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm',
+              'name'            => 'docker-ce',
               'install_options' => /--enablerepo/
             )
           end
@@ -370,15 +365,15 @@ describe 'docker', :type => :class do
           let(:params) { {
             'manage_package'              => true,
             'use_upstream_package_source' => false,
-            'package_name'                => 'docker-engine',
-            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm',
+            'package_name'                => 'docker-ce',
+            'package_source'              => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm',
             'repo_opt'                    => ''
           } }
           it do
             should contain_package('docker').with(
               'ensure'          => 'present',
-              'source'          => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-engine-1.7.0-1.el6.x86_64.rpm',
-              'name'            => 'docker-engine',
+              'source'          => 'https://get.docker.com/rpm/1.7.0/centos-6/RPMS/x86_64/docker-ce-1.7.0-1.el6.x86_64.rpm',
+              'name'            => 'docker-ce',
               'install_options' => nil
             )
           end
@@ -409,11 +404,6 @@ describe 'docker', :type => :class do
       it { should contain_class('docker::config') }
 
       it { should contain_file(service_config_file).without_content(/icc=/) }
-
-      context 'with a specific docker command' do
-        let(:params) {{ 'docker_command' => 'docker.io' }}
-        it { should contain_file(service_config_file).with_content(/docker.io/) }
-      end
 
       context 'with a custom package name' do
         let(:params) { {'package_name' => 'docker-custom-pkg-name' } }
@@ -576,11 +566,6 @@ describe 'docker', :type => :class do
       context 'with service_state set to stopped' do
         let(:params) { {'service_state' => 'stopped'} }
         it { should contain_service('docker').with_ensure('stopped') }
-      end
-
-      context 'with a custom service name' do
-        let(:params) { {'service_name' => 'docker.io'} }
-        it { should contain_service('docker').with_name('docker.io') }
       end
 
       context 'with service_enable set to false' do
@@ -754,7 +739,7 @@ describe 'docker', :type => :class do
       let(:params) { {'use_upstream_package_source' => false } }
       it { should_not contain_apt__source('docker') }
       it { should_not contain_apt__pin('docker') }
-      it { should contain_package('docker').with_name('docker-engine') }
+      it { should contain_package('docker').with_name('docker-ce') }
     end
   end
 
@@ -775,7 +760,6 @@ describe 'docker', :type => :class do
       it { should_not contain_class('epel') }
     end
 
-    it { should contain_package('docker').with_name('docker-io').with_ensure('present') }
     it { should_not contain_apt__source('docker') }
     it { should_not contain_package('linux-image-extra-3.8.0-29-generic') }
 
@@ -812,7 +796,7 @@ describe 'docker', :type => :class do
       :kernelversion => '2.6.31'
     } }
 
-    it { should contain_package('docker').with_name('docker-engine') }
+    it { should contain_package('docker').with_name('docker-ce') }
     it { should contain_yumrepo('docker').with_descr('Docker') }
     it { should_not contain_class('epel') }
   end
@@ -901,7 +885,7 @@ describe 'docker', :type => :class do
       :kernelversion => '2.6.32',
     } }
 
-    it { should contain_package('docker').with_name('docker-engine') }
+    it { should contain_package('docker').with_name('docker-ce') }
     it { should contain_yumrepo('docker') }
     it { should_not contain_class('epel') }
     it { should contain_package('docker').with_install_options('--enablerepo=rhel7-extras') }
@@ -922,7 +906,7 @@ describe 'docker', :type => :class do
       :kernelversion => '2.6.32',
     } }
 
-    it { should contain_package('docker').with_name('docker-engine') }
+    it { should contain_package('docker').with_name('docker-ce') }
     it { should_not contain_class('epel') }
     it { should contain_package('docker').with_install_options('--enablerepo=ol7_addons') }
   end
@@ -936,7 +920,7 @@ describe 'docker', :type => :class do
       :kernelversion => '2.6.32',
     } }
 
-    it { should contain_package('docker').with_name('docker-engine') }
+    it { should contain_package('docker').with_name('docker-ce') }
     it { should_not contain_class('epel') }
   end
 
@@ -965,7 +949,7 @@ describe 'docker', :type => :class do
       :kernelrelease          => '3.8.0-29-generic'
     } }
     it { should contain_service('docker').with_provider('upstart') }
-    it { should contain_package('docker').with_name('docker-engine').with_ensure('present')  }
+    it { should contain_package('docker').with_name('docker-ce').with_ensure('present')  }
     it { should contain_package('apparmor') }
   end
 

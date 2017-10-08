@@ -1,12 +1,16 @@
 HOSTS:
-  ubuntu-1404-x64:
+  ubuntu-16-04:
     roles:
-      - default
-    platform: ubuntu-14.04-amd64
-    box: puppetlabs/ubuntu-14.04-64-nocm
-    box_url: https://vagrantcloud.com/puppetlabs/ubuntu-14.04-64-nocm
-    hypervisor: vagrant
+      - master
+    platform: ubuntu-16.04-amd64
+    hypervisor: docker
+    image: ubuntu:16.04
+    docker_preserve_image: true
+    docker_command: '["/sbin/init"]'
+    docker_image_commands:
+      - 'apt-get install -y net-tools wget curl'
+      - 'locale-gen en_US.UTF-8'
 
 CONFIG:
-  log_level: verbose
+  log_level: debug
   type: foss
