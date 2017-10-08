@@ -16,10 +16,6 @@
 #   An array of additional packages that need to be installed to support
 #   docker. Defaults change depending on the operating system.
 #
-# [*docker_cs*]
-#   Whether or not to use the CS (Commercial Support) Docker packages.
-#   Defaults to false.
-#
 # [*tcp_bind*]
 #   The tcp socket to bind to in the format
 #   tcp://127.0.0.1:4243
@@ -324,8 +320,6 @@
 #
 # [*storage_vg*]
 #   The volume group to use for docker storage.
-#
-# [*storage_root_size*]
 #   The size to which the root filesystem should be grown.
 #
 # [*storage_data_size*]
@@ -353,9 +347,6 @@ class docker(
   $version                           = $docker::params::version,
   $ensure                            = $docker::params::ensure,
   $prerequired_packages              = $docker::params::prerequired_packages,
-  $docker_cs                         = $docker::params::docker_cs,
-  $package_cs_source_location        = $docker::params::package_cs_source_location,
-  $package_cs_key_source             = $docker::params::package_cs_key_source,
   $tcp_bind                          = $docker::params::tcp_bind,
   $tls_enable                        = $docker::params::tls_enable,
   $tls_verify                        = $docker::params::tls_verify,
@@ -453,7 +444,6 @@ class docker(
               'This module only works on Debian or Red Hat based systems or on Archlinux as on Gentoo.')
   validate_bool($manage_kernel)
   validate_bool($manage_package)
-  validate_bool($docker_cs)
   validate_bool($manage_service)
   validate_array($docker_users)
   validate_array($daemon_environment_files)

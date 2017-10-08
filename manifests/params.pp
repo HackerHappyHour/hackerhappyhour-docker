@@ -5,7 +5,6 @@
 class docker::params {
   $version                           = undef
   $ensure                            = present
-  $docker_cs                         = false
   $tcp_bind                          = undef
   $tls_enable                        = false
   $tls_verify                        = true

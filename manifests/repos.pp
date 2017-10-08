@@ -7,16 +7,9 @@ class docker::repos {
 
   case $::osfamily {
     'Debian': {
-      if ($docker::use_upstream_package_source) {
-        if ($docker::docker_cs) {
-          $location = $docker::package_cs_source_location
-          $key_source = $docker::package_cs_key_source
-          $package_key = $docker::package_cs_key
-        } else {
-          $location = $docker::package_source_location
-          $key_source = $docker::package_key_source
-          $package_key = $docker::package_key
-        }
+        $location = $docker::package_source_location
+        $key_source = $docker::package_key_source
+        $package_key = $docker::package_key
         ensure_packages(['debian-keyring', 'debian-archive-keyring'])
         apt::source { 'docker':
           location => $location,
@@ -47,11 +40,9 @@ class docker::repos {
           if $::operatingsystem == 'Debian' and $::lsbdistcodename == 'wheezy' {
             include apt::backports
           }
-          Exec['apt_update'] -> Package[$docker::prerequired_packages]
+        Exec['apt_update'] -> Package[$docker::prerequired_packages]
           Apt::Source['docker'] -> Package['docker']
-        }
       }
-
     }
     'RedHat': {
       if $docker::manage_package {
