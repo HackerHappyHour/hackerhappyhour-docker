@@ -5,18 +5,17 @@ before_install:
 rvm:
   - 2.4
 
-services:
-  - docker
-
 stages:
   - validation
-  - test
+  - spec
+  - acceptance
 
 jobs:
   include:
     - stage: validation
       script: bundle exec rake syntax
       script: bundle exec rake lint
-    - stage: test
+    - stage: spec
       script: bundle exec rake spec
+    - stage: acceptance
       script: bundle exec rake beaker
