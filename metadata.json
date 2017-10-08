@@ -1,6 +1,6 @@
 {
   "name": "hackerhappyhour-docker",
-  "version": "1.0.0-pre-release",
+  "version": "1.0.0-pre-release.1",
   "author": "Hacker Happy Hour",
   "summary": "Module for installing and managing docker",
   "license": "Apache-2.0",
