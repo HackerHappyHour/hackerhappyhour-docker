@@ -3,7 +3,7 @@ Puppet module for installing, configuring and managing
 
 [![Puppet
 Forge](https://img.shields.io/puppetforge/v/hackerhappyhour/docker.svg)](https://forge.puppetlabs.com/hackerhappyhour/docker) [![Build
-Status](https://secure.travis-ci.org/hackerhappyhour/hackerhappyhour-docker.png)](https://travis-ci.org/hackerhappyhour/hackerhappyhour-docker) [![Documentation
+Status](https://secure.travis-ci.org/hackerhappyhour/hackerhappyhour-docker.png)](https://travis-ci.org/hackerhappyhour/hackerhappyhour-docker)
 
 
 ## Support
@@ -11,35 +11,9 @@ Status](https://secure.travis-ci.org/hackerhappyhour/hackerhappyhour-docker.png)
 This module is currently tested on:
 
 * Debian 8.0
-* Debian 7.8
-* Ubuntu 12.04
-* Ubuntu 14.04
+* Ubuntu 16.04
 * Centos 7.0
-* Centos 6.6
 
-It may work on other distros and additional operating systems will be
-supported in the future. It's definitely been used with the following
-too:
-
-* Archlinux
-* Amazon Linux
-* Fedora
-* Gentoo
-
-## Examples
-
-* [Launch vNext app in Docker using Puppet](https://github.com/garethr/puppet-docker-vnext-example)
-  This example contains a fairly simple example using Vagrant to launch a
-  Linux virtual machine, then Puppet to install Docker, build an image and
-  run a container. For added spice the container runs a ASP.NET vNext
-  application.
-* [Multihost containers connected with
-  Consul](https://github.com/garethr/puppet-docker-example)
-  Launch multiple hosts running simple application containers and
-  connect them together using Nginx updated by Consul and Puppet.
-* [Configure Docker Swarm using
-  Puppet](https://github.com/garethr/puppet-docker-swarm-example)
-  Build a cluster of hosts running Docker Swarm configured by Puppet.
 
 ## Usage
 
@@ -60,51 +34,17 @@ class { 'docker':
   manage_kernel => false,
 }
 ```
-
-If you want to configure your package sources independently, inform this module
-to not auto-include upstream sources (This is already disabled on Archlinux
-as there is no further upstream):
-
-```puppet
-class { 'docker':
-  use_upstream_package_source => false,
-}
-```
-
-Docker recently [launched new official
-repositories](https://blog.docker.com/2015/07/new-apt-and-yum-repos/#comment-247448)
-which are now the default for the module from version 5. If you want to
-stick with the old repositories you can do so with the following:
+This module uses the docker downloads repositories by default. To override and define
+your own packages details, you can use the `package_` parameters. The example below
+is given for a private mirror of the upstream docker repository, using the `edge` release.
 
 ```puppet
 class { 'docker':
-  package_name => 'lxc-docker',
-  package_source_location => 'https://get.docker.com/ubuntu',
-  package_key_source => 'https://get.docker.com/gpg',
-  package_key => '36A1D7869245C8950F966E92D8576A8BA88D21E',
-  package_release => 'docker',
-}
-```
-
-Docker also provide a [commercially
-supported](https://docs.docker.com/docker-trusted-registry/install/install-csengine/)
-version of the Docker Engine, called Docker CS, available from a separate repository.
-This can be installed with the module using the following:
-
-```puppet
-class { 'docker':
-  docker_cs => true,
-}
-```
-
-The module also now uses the upstream repositories by default for RHEL
-based distros, including Fedora. If you want to stick with the distro packages
-you should use the following:
-
-```puppet
-class { 'docker':
-  use_upstream_package_source => false,
   package_name => 'docker',
+  package_source_location => 'https://private.mirror.org/repository/download.docker.com',
+  package_key_server => 'https://get.docker.com/gpg',
+  package_key_source => '36A1D7869245C8950F966E92D8576A8BA88D21E',
+  package_release => 'edge',
 }
 ```
 
@@ -598,3 +538,14 @@ docker::exec { 'cron_allow_root':
   unless       => 'grep root /usr/lib/cron/cron.allow 2>/dev/null',
 }
 ```
+## Deprecations and Incompatibilities with garethr/docker
+
+For most users, this module should be a drop-in replacement for the `garethr/docker`
+puppet module. However, the `garethr/docker` module has fallen quite a bit behind
+both the docker product, and the puppet platform. This module is designed to work
+with docker-ce and docker-ee 17+, and targets puppet 5.
+
+- CentOS/RHEL < 7 will not work with this module
+- docker versions 1.13 and lower will not work with this module
+- `docker_cs` parameters are no longer supported. Docker Commercially Supported was replaced with Docker EE. Both release editions of docker are supported in this package with the same `package_` parameters.
+- `use_upstream_package_source` and `use_upstream_package_pin` are no longer necesarry and
