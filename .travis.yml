@@ -7,7 +7,6 @@ rvm:
 stages:
   - validation
   - spec
-  - acceptance
 
 jobs:
   include:
@@ -16,5 +15,3 @@ jobs:
       script: bundle exec rake lint
     - stage: spec
       script: bundle exec rake spec
-    - stage: acceptance
-      script: bundle exec rake beaker
