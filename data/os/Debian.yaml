@@ -1,5 +1,5 @@
 ---
-docker::repos::docker_repository:
+docker::repository::docker_repository:
   'docker_repo':
     location: "https://download.docker.com/linux/%{::operatingsystem}"
     release: '$lsbdistcodename'
