@@ -58,6 +58,9 @@ class docker::install {
   }
 
   if $docker::manage_package {
-      ensure_resource('package', $docker::package_name, { ensure => $ensure })
+      ensure_resource('package', 'docker', {
+        ensure => $ensure,
+        name   => $docker::package_name,
+      })
   }
 }

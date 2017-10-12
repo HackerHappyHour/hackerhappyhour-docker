@@ -485,11 +485,11 @@ class docker(
     validate_string($tls_key)
   }
 
-  class { 'docker::repos': }
+  class { 'docker::repository': }
   -> class { 'docker::install': }
   -> class { 'docker::config': }
   ~> class { 'docker::service': }
-  contain 'docker::repos'
+  contain 'docker::repository'
   contain 'docker::install'
   contain 'docker::config'
   contain 'docker::service'
