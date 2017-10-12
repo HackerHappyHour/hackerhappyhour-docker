@@ -1,0 +1,11 @@
+---
+docker::repos::docker_repository:
+  'docker_repo':
+    location: "https://download.docker.com/linux/%{::operatingsystem}"
+    release: '$lsbdistcodename'
+    repos: 'stable'
+    key:
+      source: "https://download.docker.com/linux/%{::operatingsystem}"
+    include:
+      deb: true
+      src: false

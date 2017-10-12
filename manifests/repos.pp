@@ -1,14 +1,18 @@
-# == Class: docker::repos
+# == Class: docker::repository
 #
 #
-class docker::repos(
+class docker::repository (
   $manage_repos = $docker::manage_package_repository,
-  $location = $docker::package_source_location,
-  $key_source = $docker::package_key_source
+  $docker_repository
 ) {
 
   case $::osfamily {
-    'Debian': {}
-    'RedHat': {}
+    'Debian': {
+      include apt
+      create_resources('apt::source', $docker_repo)
+    }
+    'RedHat': {
+      create_resources('yumrepo', $docker_repo)
+    }
   }
 }

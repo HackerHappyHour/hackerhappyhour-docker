@@ -12,6 +12,10 @@
 #   Passed to the docker package.
 #   Defaults to present
 #
+# [*edition*]
+#   The edition of docker, 'ce' or 'ee'
+#   Defaults to ee
+#
 # [*prerequired_packages*]
 #   An array of additional packages that need to be installed to support
 #   docker. Defaults change depending on the operating system.
@@ -146,29 +150,6 @@
 #   Enable selinux support. Default is false. SELinux does  not  presently
 #   support  the  BTRFS storage driver.
 #   Valid values: true, false
-#
-# [*use_upstream_package_source*]
-#   Whether or not to use the upstream package source.
-#   If you run your own package mirror, you may set this
-#   to false.
-#
-# [*pin_upstream_package_source*]
-#   Pin upstream package source; this option currently only has any effect on
-#   apt-based distributions.  Set to false to remove pinning on the upstream
-#   package repository.  See also "apt_source_pin_level".
-#   Defaults to true
-#
-# [*apt_source_pin_level*]
-#   What level to pin our source package repository to; this only is relevent
-#   if you're on an apt-based system (Debian, Ubuntu, etc) and
-#   $use_upstream_package_source is set to true.  Set this to false to disable
-#   pinning, and undef to ensure the apt preferences file apt::source uses to
-#   define pins is removed.
-#   Defaults to 10
-#
-# [*package_source_location*]
-#   If you're using an upstream package source, what is it's
-#   location. Defaults to http://get.docker.com/ubuntu on Debian
 #
 # [*service_state*]
 #   Whether you want to docker daemon to start up
@@ -312,9 +293,6 @@
 #   Specify additional environment files to add to the
 #   service-overrides.conf
 #
-# [*repo_opt*]
-#   Specify a string to pass as repository options (RedHat only)
-#
 # [*storage_devs*]
 #   A quoted, space-separated list of devices to be used.
 #
@@ -346,7 +324,7 @@
 class docker(
   $ensure                            = 'latest',
   $version                           = undef,
-  $docker_edition                    = 'ce',
+  $edition                           = 'ce',
   $prerequired_packages              = $docker::params::prerequired_packages,
   $tcp_bind                          = $docker::params::tcp_bind,
   $tls_enable                        = $docker::params::tls_enable,
@@ -368,12 +346,6 @@ class docker(
   $log_driver                        = $docker::params::log_driver,
   $log_opt                           = $docker::params::log_opt,
   $selinux_enabled                   = $docker::params::selinux_enabled,
-  $apt_source_pin_level              = $docker::params::apt_source_pin_level,
-  $package_source_location           = $docker::params::package_source_location,
-  $package_release                   = $docker::params::package_release,
-  $package_repos                     = $docker::params::package_repos,
-  $package_key                       = $docker::params::package_key,
-  $package_key_source                = $docker::params::package_key_source,
   $service_state                     = $docker::params::service_state,
   $service_enable                    = $docker::params::service_enable,
   $manage_service                    = $docker::params::manage_service,
@@ -414,7 +386,6 @@ class docker(
   $docker_users                      = [],
   $docker_group                      = $docker::params::docker_group,
   $daemon_environment_files          = [],
-  $repo_opt                          = $docker::params::repo_opt,
   $nowarn_kernel                     = $docker::params::nowarn_kernel,
   $storage_devs                      = $docker::params::storage_devs,
   $storage_vg                        = $docker::params::storage_vg,
@@ -438,8 +409,8 @@ class docker(
 ) inherits docker::params {
 
   validate_string($version)
-  validate_re($::osfamily, '^(Debian|RedHat|Archlinux|Gentoo)$',
-              'This module only works on Debian or Red Hat based systems or on Archlinux as on Gentoo.')
+  validate_re($::osfamily, '^(Debian|RedHat)$',
+              'This module only works on Debian or Red Hat based systems' )
   validate_bool($manage_kernel)
   validate_bool($manage_package)
   validate_bool($manage_service)
