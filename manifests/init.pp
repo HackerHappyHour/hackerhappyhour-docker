@@ -10,11 +10,8 @@
 #
 # [*ensure*]
 #   Passed to the docker package.
+#   Accepts 'present|absent|latest', or complete package names (including version)
 #   Defaults to present
-#
-# [*edition*]
-#   The edition of docker, 'ce' or 'ee'
-#   Defaults to ee
 #
 # [*prerequired_packages*]
 #   An array of additional packages that need to be installed to support
@@ -323,8 +320,8 @@
 #
 class docker(
   $ensure                            = 'latest',
+  $package_name                      = 'docker-ce',
   $version                           = undef,
-  $edition                           = 'ce',
   $prerequired_packages              = $docker::params::prerequired_packages,
   $tcp_bind                          = $docker::params::tcp_bind,
   $tls_enable                        = $docker::params::tls_enable,
@@ -377,8 +374,6 @@ class docker(
   $dm_override_udev_sync_check       = $docker::params::dm_override_udev_sync_check,
   $execdriver                        = $docker::params::execdriver,
   $manage_package                    = $docker::params::manage_package,
-  $package_source                    = $docker::params::package_source,
-  $package_name                      = 'docker-ce',
   $service_name                      = $docker::params::service_name,
   $docker_command                    = $docker::params::docker_command,
   $daemon_command                    = $docker::params::daemon_command,

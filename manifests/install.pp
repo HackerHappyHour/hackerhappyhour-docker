@@ -5,7 +5,6 @@
 # and Archlinux based distributions.
 #
 class docker::install {
-  $docker_command = $docker::docker_command
   validate_re($::osfamily, '^(Debian|RedHat)$',
               'This module only works on Debian or Red Hat based systems.')
 
@@ -54,30 +53,11 @@ class docker::install {
       ensure => present,
     }
     if $docker::manage_package {
-      Package[$kernelpackage] -> Package['docker']
+      Package[$kernelpackage] -> Package[$docker::package_name]
     }
   }
 
   if $docker::manage_package {
-
-    if empty($docker::repo_opt) {
-      $docker_hash = {}
-    } else {
-      $docker_hash = { 'install_options' => $docker::repo_opt }
-    }
-
-      ensure_resource('package', 'docker', merge($docker_hash, {
-        ensure   => $ensure,
-        provider => $pk_provider,
-        source   => $docker::package_source,
-        name     => $docker::package_name,
-      }))
-
-    } else {
-      ensure_resource('package', 'docker', merge($docker_hash, {
-        ensure => $ensure,
-        name   => $docker::package_name,
-      }))
-    }
+      ensure_resource('package', $docker::package_name, { ensure => $ensure })
   }
 }
