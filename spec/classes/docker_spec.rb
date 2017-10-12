@@ -49,8 +49,7 @@ describe 'docker', :type => :class do
 
         it { should contain_class('apt') }
         it { should contain_package('docker').with_name('docker-ce').with_ensure('present') }
-        it { should contain_apt__source('docker').with_location('http://apt.dockerproject.org/repo') }
-        it { should contain_apt__pin('docker').with_origin('apt.dockerproject.org') }
+        it { should contain_apt__source('docker').with_location('https://download.docker.com/linux') }
         it { should contain_package('docker').with_install_options(nil) }
 
         it { should contain_file('/etc/default/docker').without_content(/icc=/) }

@@ -7,7 +7,7 @@ class docker::repository (
 ) {
 
   if $manage_repos {
-    case $::osfamily {
+    case $facts['os']['family'] {
       'Debian': {
         include apt
         create_resources('apt::source', $docker_repository)
