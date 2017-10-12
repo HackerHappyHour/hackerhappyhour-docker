@@ -257,6 +257,10 @@
 #   Won't install or define the docker package, useful if you want to use your own package
 #   Defaults to true
 #
+# [*manage_package_repository*]
+#   configure package management repository, set to False to disable
+#   Defaults to true
+#
 # [*package_name*]
 #   Specify custom package name
 #   Default is set on a per system basis in docker::params
@@ -321,6 +325,8 @@
 class docker(
   $ensure                            = 'latest',
   $package_name                      = 'docker-ce',
+  $manage_package                    = true,
+  $manage_package_repository         = true,
   $version                           = undef,
   $prerequired_packages              = $docker::params::prerequired_packages,
   $tcp_bind                          = $docker::params::tcp_bind,
@@ -373,7 +379,6 @@ class docker(
   $dm_blkdiscard                     = $docker::params::dm_blkdiscard,
   $dm_override_udev_sync_check       = $docker::params::dm_override_udev_sync_check,
   $execdriver                        = $docker::params::execdriver,
-  $manage_package                    = $docker::params::manage_package,
   $service_name                      = $docker::params::service_name,
   $docker_command                    = $docker::params::docker_command,
   $daemon_command                    = $docker::params::daemon_command,

@@ -50,7 +50,6 @@ class docker::params {
   $dm_use_deferred_deletion          = undef
   $dm_blkdiscard                     = undef
   $dm_override_udev_sync_check       = undef
-  $manage_package                    = true
   $manage_kernel                     = true
   $service_name_default              = 'docker'
   $docker_command_default            = 'docker'
