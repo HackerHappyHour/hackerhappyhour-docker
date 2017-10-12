@@ -3,8 +3,6 @@
 # Default parameter values for the docker module
 #
 class docker::params {
-  $version                           = undef
-  $ensure                            = present
   $tcp_bind                          = undef
   $tls_enable                        = false
   $tls_verify                        = true
@@ -53,9 +51,7 @@ class docker::params {
   $dm_blkdiscard                     = undef
   $dm_override_udev_sync_check       = undef
   $manage_package                    = true
-  $package_source                    = undef
   $manage_kernel                     = true
-  $package_name_default              = 'docker-ce'
   $service_name_default              = 'docker'
   $docker_command_default            = 'docker'
   $docker_group_default              = 'docker'
@@ -123,26 +119,12 @@ class docker::params {
         }
       }
 
-      $manage_epel = false
-      $package_name = $package_name_default
       $service_name = $service_name_default
       $docker_command = $docker_command_default
       $docker_group = $docker_group_default
-      $package_repos = 'main'
-      $use_upstream_package_source = true
-      $pin_upstream_package_source = true
-      $apt_source_pin_level = 10
-      $repo_opt = undef
       $nowarn_kernel = false
       $service_config = undef
       $storage_setup_file = undef
-
-      $package_cs_source_location = 'http://packages.docker.com/1.9/apt/repo'
-      $package_cs_key_source = 'https://packages.docker.com/1.9/apt/gpg'
-      $package_cs_key = '0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e'
-      $package_source_location = 'http://apt.dockerproject.org/repo'
-      $package_key_source = 'https://apt.dockerproject.org/gpg'
-      $package_key = '58118E89F3A912897C070ADBF76221572C52609D'
 
       if ($::operatingsystem == 'Debian' and versioncmp($::operatingsystemmajrelease, '8') >= 0) or
         ($::operatingsystem == 'Ubuntu' and versioncmp($::operatingsystemrelease, '15.04') >= 0) {
@@ -169,33 +151,6 @@ class docker::params {
         $service_overrides_template = undef
       }
 
-      if (versioncmp($::operatingsystemrelease, '7.0') < 0) and $::operatingsystem != 'Amazon' {
-        $package_name = 'docker-io'
-        $use_upstream_package_source = false
-        $manage_epel = true
-      } elsif $::operatingsystem == 'Amazon' {
-        $package_name = 'docker'
-        $use_upstream_package_source = false
-        $manage_epel = false
-      } else {
-        $package_name = $package_name_default
-        $use_upstream_package_source = true
-        $manage_epel = false
-      }
-      $package_key_source = 'https://yum.dockerproject.org/gpg'
-      if $::operatingsystem == 'Fedora' {
-        $package_source_location = "https://yum.dockerproject.org/repo/main/fedora/${::operatingsystemmajrelease}"
-      } else {
-        $package_source_location = "https://yum.dockerproject.org/repo/main/centos/${::operatingsystemmajrelease}"
-      }
-      $package_cs_source_location = "https://packages.docker.com/1.9/yum/repo/main/centos/${::operatingsystemmajrelease}"
-      $package_cs_key_source = 'https://packages.docker.com/1.9/yum/gpg'
-      $package_key = undef
-      $package_cs_ke = undef
-      $package_repos = undef
-      $package_release = undef
-      $pin_upstream_package_source = undef
-      $apt_source_pin_level = undef
       $service_name = $service_name_default
       $docker_command = $docker_command_default
       if (versioncmp($::operatingsystemrelease, '7.0') < 0) or ($::operatingsystem == 'Amazon') {
@@ -207,37 +162,8 @@ class docker::params {
         }
       } else {
         $detach_service_in_init = false
-        if $use_upstream_package_source {
-          $docker_group = $docker_group_default
-        } else {
-          $docker_group = 'dockerroot'
-        }
+        $docker_group = 'dockerroot'
         include docker::systemd_reload
-      }
-
-      # repo_opt to specify install_options for docker package
-      if (versioncmp($::operatingsystemmajrelease, '7') == 0) {
-        if $::operatingsystem == 'RedHat' {
-          $repo_opt = '--enablerepo=rhel7-extras'
-        } elsif $::operatingsystem == 'CentOS' {
-          $repo_opt = '--enablerepo=extras'
-        } elsif $::operatingsystem == 'OracleLinux' {
-          $repo_opt = '--enablerepo=ol7_addons'
-        } elsif $::operatingsystem == 'Scientific' {
-          $repo_opt = ''
-        } else {
-          $repo_opt = undef
-        }
-      } elsif (versioncmp($::operatingsystemrelease, '7.0') < 0 and $::operatingsystem == 'OracleLinux') {
-          # FIXME is 'public_ol6_addons' available on all OL6 installs?
-          $repo_opt = '--enablerepo=public_ol6_addons,public_ol6_latest'
-      } else {
-        $repo_opt = undef
-      }
-      if $::kernelversion == '2.6.32' {
-        $nowarn_kernel = true
-      } else {
-        $nowarn_kernel = false
       }
     }
     'Archlinux' : {
@@ -245,15 +171,7 @@ class docker::params {
 
       $manage_epel = false
       $docker_group = $docker_group_default
-      $package_key_source = undef
-      $package_source_location = undef
-      $package_key = undef
-      $package_repos = undef
-      $package_release = undef
       $use_upstream_package_source = false
-      $package_cs_source_location = undef
-      $package_cs_key_source = undef
-      $package_name = 'docker'
       $service_name = $service_name_default
       $docker_command = $docker_command_default
       $detach_service_in_init = false
@@ -267,21 +185,10 @@ class docker::params {
       $service_config_template = 'docker/etc/conf.d/docker.erb'
       $storage_config = undef
       $storage_setup_file = undef
-      $pin_upstream_package_source = undef
-      $apt_source_pin_level = undef
     }
     'Gentoo' : {
       $manage_epel = false
       $docker_group = $docker_group_default
-      $package_key_source = undef
-      $package_source_location = undef
-      $package_key = undef
-      $package_repos = undef
-      $package_release = undef
-      $use_upstream_package_source = false
-      $package_cs_source_location = undef
-      $package_cs_key_source = undef
-      $package_name = 'app-emulation/docker'
       $service_name = $service_name_default
       $docker_command = $docker_command_default
       $detach_service_in_init = true
@@ -301,30 +208,19 @@ class docker::params {
     default: {
       $manage_epel = false
       $docker_group = $docker_group_default
-      $package_key_source = undef
-      $package_source_location = undef
-      $package_key = undef
-      $package_cs_source_location = undef
-      $package_cs_key_source = undef
-      $package_repos = undef
-      $package_release = undef
       $use_upstream_package_source = true
       $service_overrides_template = undef
       $service_hasstatus  = undef
       $service_hasrestart = undef
       $service_provider = undef
-      $package_name = $package_name_default
       $service_name = $service_name_default
       $docker_command = $docker_command_default
       $detach_service_in_init = true
-      $repo_opt = undef
       $nowarn_kernel = false
       $service_config = undef
       $storage_config = undef
       $storage_setup_file = undef
       $service_config_template = undef
-      $pin_upstream_package_source = undef
-      $apt_source_pin_level = undef
     }
   }
 

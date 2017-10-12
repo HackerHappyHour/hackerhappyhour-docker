@@ -344,8 +344,9 @@
 #   Extend the pool by specified percentage when threshold is hit.
 #
 class docker(
-  $version                           = $docker::params::version,
-  $ensure                            = $docker::params::ensure,
+  $ensure                            = 'latest',
+  $version                           = undef,
+  $docker_edition                    = 'ce',
   $prerequired_packages              = $docker::params::prerequired_packages,
   $tcp_bind                          = $docker::params::tcp_bind,
   $tls_enable                        = $docker::params::tls_enable,
@@ -367,8 +368,6 @@ class docker(
   $log_driver                        = $docker::params::log_driver,
   $log_opt                           = $docker::params::log_opt,
   $selinux_enabled                   = $docker::params::selinux_enabled,
-  $use_upstream_package_source       = $docker::params::use_upstream_package_source,
-  $pin_upstream_package_source       = $docker::params::pin_upstream_package_source,
   $apt_source_pin_level              = $docker::params::apt_source_pin_level,
   $package_source_location           = $docker::params::package_source_location,
   $package_release                   = $docker::params::package_release,
@@ -407,8 +406,7 @@ class docker(
   $execdriver                        = $docker::params::execdriver,
   $manage_package                    = $docker::params::manage_package,
   $package_source                    = $docker::params::package_source,
-  $manage_epel                       = $docker::params::manage_epel,
-  $package_name                      = $docker::params::package_name,
+  $package_name                      = 'docker-ce',
   $service_name                      = $docker::params::service_name,
   $docker_command                    = $docker::params::docker_command,
   $daemon_command                    = $docker::params::daemon_command,

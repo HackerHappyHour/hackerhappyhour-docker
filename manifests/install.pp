@@ -6,10 +6,8 @@
 #
 class docker::install {
   $docker_command = $docker::docker_command
-  validate_string($docker::version)
-  validate_re($::osfamily, '^(Debian|RedHat|Archlinux|Gentoo)$',
-              'This module only works on Debian or Red Hat based systems or on Archlinux as on Gentoo.')
-  validate_bool($docker::use_upstream_package_source)
+  validate_re($::osfamily, '^(Debian|RedHat)$',
+              'This module only works on Debian or Red Hat based systems.')
 
   if $docker::version and $docker::ensure != 'absent' {
     $ensure = $docker::version
@@ -43,20 +41,9 @@ class docker::install {
           fail('Docker needs Amazon version to be at least 3.10.37-47.135.')
         }
       }
-      elsif versioncmp($::operatingsystemrelease, '6.5') < 0 {
-        fail('Docker needs RedHat/CentOS version to be at least 6.5.')
+      elsif versioncmp($::operatingsystemrelease, '7.0') < 0 {
+        fail('Docker needs RedHat/CentOS version to be at least 7.0')
       }
-      $manage_kernel = false
-    }
-    'Archlinux': {
-      $manage_kernel = false
-      if $docker::version {
-        notify { 'docker::version unsupported on Archlinux':
-          message => 'Versions other than latest are not supported on Arch Linux. This setting will be ignored.'
-        }
-      }
-    }
-    'Gentoo': {
       $manage_kernel = false
     }
     default: {}
@@ -78,22 +65,6 @@ class docker::install {
     } else {
       $docker_hash = { 'install_options' => $docker::repo_opt }
     }
-
-    if $docker::package_source {
-      case $::osfamily {
-        'Debian' : {
-          $pk_provider = 'dpkg'
-        }
-        'RedHat' : {
-          $pk_provider = 'rpm'
-        }
-        'Gentoo' : {
-          $pk_provider = 'portage'
-        }
-        default : {
-          $pk_provider = undef
-        }
-      }
 
       ensure_resource('package', 'docker', merge($docker_hash, {
         ensure   => $ensure,
