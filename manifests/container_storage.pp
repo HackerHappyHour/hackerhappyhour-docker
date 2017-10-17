@@ -1,3 +1,4 @@
+/# class: docker::container_storage/
 class docker::container_storage (
   $manage_storage = false,
   $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
