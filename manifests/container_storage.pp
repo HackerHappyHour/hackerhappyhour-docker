@@ -1,4 +1,3 @@
-/# class: docker::container_storage/
 class docker::container_storage (
   $manage_storage = false,
   $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
@@ -26,7 +25,7 @@ class docker::container_storage (
       ensure => 'present',
       owner  => 'root',
       group  => 'root',
-      mode   => '0755'
+      mode   => '0755',
       source => 'puppet:///modules/docker/container-storage-setup.sh'
     }
 
@@ -34,8 +33,8 @@ class docker::container_storage (
       ensure => 'present',
       owner  => 'root',
       group  => 'root',
-      mode   => '0755'
-      source => 'puppet:///modules/docker/container-storage-setup.sh'
+      mode   => '0755',
+      source => 'puppet:///modules/docker/css-child-read-write.sh'
     }
 
     file {$container_storage_setup_config_file:
@@ -61,9 +60,9 @@ class docker::container_storage (
         })
     }
 
-    Exec{$container_storage_setup_script:
-      unless => "test -f ${container_storage_output_file}"
-    }
+    #    Exec{$container_storage_setup_script:
+    # unless => "test -f ${container_storage_output_file}"
+    #}
   }
 
 }
