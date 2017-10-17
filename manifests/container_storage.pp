@@ -43,7 +43,7 @@ class docker::container_storage (
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
-      content => epp('puppet:///docker/storage/container-storage-setup.conf.epp', {
+      content => epp('docker/storage/container-storage-setup.conf.epp', {
         'storage_driver'            => $storage_driver,
         'extra_storage_options'     => $extra_storage_options,
         'devs'                      => $devs,
