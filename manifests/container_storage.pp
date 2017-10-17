@@ -10,7 +10,7 @@ class docker::container_storage (
   $devs = undef,
   $container_thinpool = 'container-thinpool',
   $vg = undef,
-  $root_size = 8G,
+  $root_size = '8G',
   $data_size = '40%FREE',
   $min_data_size = '2G',
   $pool_meta_size = '16M',
