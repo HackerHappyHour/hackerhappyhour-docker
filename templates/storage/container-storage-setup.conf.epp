@@ -1,0 +1,51 @@
+<%- | String $storage_driver,
+      String $extra_storage_options,
+      String $devs,
+      String $container_thinpool,
+      String $vg,
+      String $root_size,
+      String $data_size,
+      String $min_data_size,
+      String $pool_meta_size,
+      String $chunk_size,
+      $growpart,
+      String $auto_extend_pool,
+      $pool_autoextend_threshold,
+      $pool_autoextend_percent
+| -%>
+# This file is managed by Puppet and local changes
+# may be overwritten
+
+# Edit this file to override any configuration options specified in
+# /usr/lib/docker-storage-setup/docker-storage-setup.
+#
+# For more details refer to "man docker-storage-setup"
+
+<% if @storage_driver %>STORAGE_DRIVER=<%= @storage_driver %>
+<% end -%>
+<% if @extra_storage_options %>EXTRA_STORAGE_OPTIONS=<%= @extra_storage_options %>
+<% end -%>
+<% if @devs %>DEVS="<%= @devs %>"
+<% end -%>
+<% if @container_thinpool %>DEVS=<%= @container_thinpool %>
+<% end -%>
+<% if @vg %>VG=<%= @vg %>
+<% end -%>
+<% if @root_size %>ROOT_SIZE=<%= @root_size %>
+<% end -%>
+<% if @data_size %>DATA_SIZE=<%= @data_size %>
+<% end -%>
+<% if @min_data_size %>MIN_DATA_SIZE=<%= @min_data_size %>
+<% end -%>
+<% if @pool_meta_size %>POOL_META_SIZE=<%= @pool_meta_size %>
+<% end -%>
+<% if @chunk_size %>CHUNK_SIZE=<%= @chunk_size %>
+<% end -%>
+<% if @growpart %>GROWPART=<%= @growpart %>
+<% end -%>
+<% if @auto_extend_pool %>AUTO_EXTEND_POOL=<%= @auto_extend_pool %>
+<% end -%>
+<% if @pool_autoextend_threshold %>POOL_AUTOEXTEND_THRESHOLD=<%= @pool_autoextend_threshold %>
+<% end -%>
+<% if @pool_autoextend_percent %>POOL_AUTOEXTEND_PERCENT=<%= @pool_autoextend_percent %>
+<% end -%>

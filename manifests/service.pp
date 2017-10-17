@@ -67,7 +67,6 @@ class docker::service (
   $execdriver                        = $docker::execdriver,
   $bip                               = $docker::bip,
   $mtu                               = $docker::mtu,
-  $storage_driver                    = $docker::storage_driver,
   $dm_basesize                       = $docker::dm_basesize,
   $dm_fs                             = $docker::dm_fs,
   $dm_mkfsarg                        = $docker::dm_mkfsarg,
@@ -84,19 +83,6 @@ class docker::service (
   $dm_use_deferred_deletion          = $docker::dm_use_deferred_deletion,
   $dm_blkdiscard                     = $docker::dm_blkdiscard,
   $dm_override_udev_sync_check       = $docker::dm_override_udev_sync_check,
-  $storage_devs                      = $docker::storage_devs,
-  $storage_vg                        = $docker::storage_vg,
-  $storage_root_size                 = $docker::storage_root_size,
-  $storage_data_size                 = $docker::storage_data_size,
-  $storage_min_data_size             = $docker::storage_min_data_size,
-  $storage_chunk_size                = $docker::storage_chunk_size,
-  $storage_growpart                  = $docker::storage_growpart,
-  $storage_auto_extend_pool          = $docker::storage_auto_extend_pool,
-  $storage_pool_autoextend_threshold = $docker::storage_pool_autoextend_threshold,
-  $storage_pool_autoextend_percent   = $docker::storage_pool_autoextend_percent,
-  $storage_config                    = $docker::storage_config,
-  $storage_config_template           = $docker::storage_config_template,
-  $storage_setup_file                = $docker::storage_setup_file,
   $service_provider                  = $docker::service_provider,
   $service_config                    = $docker::service_config,
   $service_config_template           = $docker::service_config_template,
@@ -134,16 +120,6 @@ class docker::service (
     default => [],
   }
 
-  if $::osfamily == 'RedHat' {
-    file { $storage_setup_file:
-      ensure  => present,
-      force   => true,
-      content => template('docker/etc/sysconfig/docker-storage-setup.erb'),
-      before  => $_manage_service,
-      notify  => $_manage_service,
-    }
-  }
-
   case $service_provider {
     'systemd': {
       file { '/etc/systemd/system/docker.service.d':
@@ -174,15 +150,6 @@ class docker::service (
       }
     }
     default: {}
-  }
-
-  if $storage_config {
-    file { $storage_config:
-      ensure  => present,
-      force   => true,
-      content => template($storage_config_template),
-      notify  => $_manage_service,
-    }
   }
 
   if $_service_config {
