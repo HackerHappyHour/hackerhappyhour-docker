@@ -21,31 +21,31 @@
 #
 # For more details refer to "man docker-storage-setup"
 
-<% if @storage_driver %>STORAGE_DRIVER=<%= @storage_driver %>
-<% end -%>
-<% if @extra_storage_options %>EXTRA_STORAGE_OPTIONS=<%= @extra_storage_options %>
-<% end -%>
-<% if @devs %>DEVS="<%= @devs %>"
-<% end -%>
-<% if @container_thinpool %>DEVS=<%= @container_thinpool %>
-<% end -%>
-<% if @vg %>VG=<%= @vg %>
-<% end -%>
-<% if @root_size %>ROOT_SIZE=<%= @root_size %>
-<% end -%>
-<% if @data_size %>DATA_SIZE=<%= @data_size %>
-<% end -%>
-<% if @min_data_size %>MIN_DATA_SIZE=<%= @min_data_size %>
-<% end -%>
-<% if @pool_meta_size %>POOL_META_SIZE=<%= @pool_meta_size %>
-<% end -%>
-<% if @chunk_size %>CHUNK_SIZE=<%= @chunk_size %>
-<% end -%>
-<% if @growpart %>GROWPART=<%= @growpart %>
-<% end -%>
-<% if @auto_extend_pool %>AUTO_EXTEND_POOL=<%= @auto_extend_pool %>
-<% end -%>
-<% if @pool_autoextend_threshold %>POOL_AUTOEXTEND_THRESHOLD=<%= @pool_autoextend_threshold %>
-<% end -%>
-<% if @pool_autoextend_percent %>POOL_AUTOEXTEND_PERCENT=<%= @pool_autoextend_percent %>
-<% end -%>
+<% if $storage_driver {%>STORAGE_DRIVER=<%= $storage_driver %>
+<% } -%>
+<% if $extra_storage_options {%>EXTRA_STORAGE_OPTIONS=<%= $extra_storage_options %>
+<% } -%>
+<% if $devs {%>DEVS="<%= $devs %>"
+<% } -%>
+<% if $container_thinpool {%>DEVS=<%= $container_thinpool %>
+<% } -%>
+<% if $vg {%>VG=<%= $vg %>
+<% } -%>
+<% if $root_size {%>ROOT_SIZE=<%= $root_size %>
+<% } -%>
+<% if $data_size {%>DATA_SIZE=<%= $data_size %>
+<% } -%>
+<% if $min_data_size {%>MIN_DATA_SIZE=<%= $min_data_size %>
+<% } -%>
+<% if $pool_meta_size {%>POOL_META_SIZE=<%= $pool_meta_size %>
+<% } -%>
+<% if $chunk_size {%>CHUNK_SIZE=<%= $chunk_size %>
+<% } -%>
+<% if $growpart {%>GROWPART=<%= $growpart %>
+<% } -%>
+<% if $auto_extend_pool {%>AUTO_EXTEND_POOL=<%= $auto_extend_pool %>
+<% } -%>
+<% if $pool_autoextend_threshold {%>POOL_AUTOEXTEND_THRESHOLD=<%= $pool_autoextend_threshold %>
+<% } -%>
+<% if $pool_autoextend_percent {%>POOL_AUTOEXTEND_PERCENT=<%= $pool_autoextend_percent %>
+<% } -%>
