@@ -73,7 +73,7 @@ class docker::container_storage (
     }
 
     Exec{$container_storage_setup_script:
-      command => "${container_storage_setup_script} ${container_storage_setup_config_file} ${container_storage_output_file}",
+      command => ${container_storage_setup_script},
       path    => $exec_path,
       unless  => "test -f ${container_storage_output_file}",
       require => File[$container_storage_setup_script, $container_storage_setup_child_script, $container_storage_setup_config_file, $container_storage_setup_libcss_script]
