@@ -39,7 +39,7 @@ class docker::container_storage (
       source => 'puppet:///modules/docker/css-child-read-write.sh'
     }
 
-    file {$container_storage_libcss_script:
+    file {$container_storage_setup_libcss_script:
       ensure => 'present',
       owner  => 'root',
       group  => 'root',
