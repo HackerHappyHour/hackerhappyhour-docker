@@ -18,7 +18,7 @@ class docker::container_storage (
   $container_storage_output_file = '/etc/sysconfig/docker-storage',
   $container_storage_setup_script = '/usr/local/bin/container-storage-setup.sh',
   $container_storage_setup_child_script = '/usr/local/bin/css-child-read-write.sh',
-  $container_storage_setup_libcss_sscript = '/usr/local/bin/libcss.sh',
+  $container_storage_setup_libcss_script = '/usr/local/bin/libcss.sh',
   $exec_path = ['/usr/local/bin', '/usr/bin']
 ){
 
