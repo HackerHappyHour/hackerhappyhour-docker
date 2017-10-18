@@ -1,9 +1,5 @@
 class docker::container_storage (
   $manage_storage = false,
-  $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
-  $container_storage_output_file = '/etc/sysconfig/docker-storage',
-  $container_storage_setup_script = '/usr/local/bin/container-storage-setup.sh',
-  $container_storage_setup_child_script = '/usr/local/bin/css-child-read-write.sh',
   $storage_driver = undef,
   $extra_storage_options = undef,
   $devs = undef,
@@ -17,7 +13,12 @@ class docker::container_storage (
   $growpart = false,
   $auto_extend_pool = 'yes',
   $pool_autoextend_threshold = '60',
-  $pool_autoextend_percent = '20'
+  $pool_autoextend_percent = '20',
+  $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
+  $container_storage_output_file = '/etc/sysconfig/docker-storage',
+  $container_storage_setup_script = '/usr/local/bin/container-storage-setup.sh',
+  $container_storage_setup_child_script = '/usr/local/bin/css-child-read-write.sh',
+  $exec_path = ['/usr/local/bin', '/usr/bin']
 ){
 
   if $manage_storage {
@@ -62,6 +63,7 @@ class docker::container_storage (
 
     Exec{$container_storage_setup_script:
       command => "${container_storage_setup_script} ${container_storage_setup_config_file} ${container_storage_output_file}",
+      path    => $exec_path,
       unless  => "test -f ${container_storage_output_file}",
       require => File[$container_storage_setup_script, $container_storage_setup_child_script, $container_storage_setup_config_file]
     }
