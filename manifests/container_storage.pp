@@ -44,7 +44,7 @@ class docker::container_storage (
       owner  => 'root',
       group  => 'root',
       mode   => '0755',
-      source => 'puppet:///modules/docker/css-child-read-write.sh'
+      source => 'puppet:///modules/docker/libcss.sh'
     }
 
     file {$container_storage_setup_config_file:
