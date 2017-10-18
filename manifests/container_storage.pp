@@ -2,8 +2,8 @@ class docker::container_storage (
   $manage_storage = false,
   $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
   $container_storage_output_file = '/etc/sysconfig/docker-storage',
-  $container_storage_setup_script = '/usr/bin/container-storage-setup.sh',
-  $container_storage_setup_child_script = '/usr/bin/css-child-read-write.sh',
+  $container_storage_setup_script = '/usr/local/bin/container-storage-setup.sh',
+  $container_storage_setup_child_script = '/usr/local/bin/css-child-read-write.sh',
   $storage_driver = undef,
   $extra_storage_options = undef,
   $devs = undef,
@@ -60,9 +60,11 @@ class docker::container_storage (
         })
     }
 
-    #    Exec{$container_storage_setup_script:
-    # unless => "test -f ${container_storage_output_file}"
-    #}
+    Exec{$container_storage_setup_script:
+      command => "${container_storage_setup_script} ${container_storage_setup_config_file} ${container_storage_output_file}",
+      unless  => "test -f ${container_storage_output_file}",
+      require => File[$container_storage_setup_script, $container_storage_setup_child_script, $container_storage_setup_config_file]
+    }
   }
 
 }
