@@ -220,64 +220,6 @@
 # [*no_proxy*]
 #   Will set the no_proxy variable in /etc/sysconfig/docker (redhat/centos) or /etc/default/docker (debian)
 #
-# [*storage_driver*]
-#   Specify a storage driver to use
-#   Default is undef: let docker choose the correct one
-#   Valid values: aufs, devicemapper, btrfs, overlay, overlay2, vfs, zfs
-#
-# [*dm_basesize*]
-#   The size to use when creating the base device, which limits the size of images and containers.
-#   Default value is 10G
-#
-# [*dm_fs*]
-#   The filesystem to use for the base image (xfs or ext4)
-#   Defaults to ext4
-#
-# [*dm_mkfsarg*]
-#   Specifies extra mkfs arguments to be used when creating the base device.
-#
-# [*dm_mountopt*]
-#   Specifies extra mount options used when mounting the thin devices.
-#
-# [*dm_blocksize*]
-#   A custom blocksize to use for the thin pool.
-#   Default blocksize is 64K.
-#   Warning: _DO NOT_ change this parameter after the lvm devices have been initialized.
-#
-# [*dm_loopdatasize*]
-#   Specifies the size to use when creating the loopback file for the "data" device which is used for the thin pool
-#   Default size is 100G
-#
-# [*dm_loopmetadatasize*]
-#   Specifies the size to use when creating the loopback file for the "metadata" device which is used for the thin pool
-#   Default size is 2G
-#
-# [*dm_datadev*]
-#   (deprecated - dm_thinpooldev should be used going forward)
-#   A custom blockdevice to use for data for the thin pool.
-#
-# [*dm_metadatadev*]
-#   (deprecated - dm_thinpooldev should be used going forward)
-#   A custom blockdevice to use for metadata for the thin pool.
-#
-# [*dm_thinpooldev*]
-#   Specifies a custom block storage device to use for the thin pool.
-#
-# [*dm_use_deferred_removal*]
-#   Enables use of deferred device removal if libdm and the kernel driver support the mechanism.
-#
-# [*dm_use_deferred_deletion*]
-#    Enables use of deferred device deletion if libdm and the kernel driver support the mechanism.
-#
-# [*dm_blkdiscard*]
-#   Enables or disables the use of blkdiscard when removing devicemapper devices.
-#   Defaults to false
-#
-# [*dm_override_udev_sync_check*]
-#   By default, the devicemapper backend attempts to synchronize with the udev
-#   device manager for the Linux kernel. This option allows disabling that
-#   synchronization, to continue even though the configuration may be buggy.
-#   Defaults to true
 #
 # [*manage_package*]
 #   Won't install or define the docker package, useful if you want to use your own package
@@ -319,35 +261,6 @@
 # [*repo_opt*]
 #   Specify a string to pass as repository options (RedHat only)
 #
-# [*storage_devs*]
-#   A quoted, space-separated list of devices to be used.
-#
-# [*storage_vg*]
-#   The volume group to use for docker storage.
-#
-# [*storage_root_size*]
-#   The size to which the root filesystem should be grown.
-#
-# [*storage_data_size*]
-#   The desired size for the docker data LV
-#
-# [*storage_min_data_size*]
-#   The minimum size of data volume otherwise pool creation fails
-#
-# [*storage_chunk_size*]
-#   Controls the chunk size/block size of thin pool.
-#
-# [*storage_growpart*]
-#   Enable resizing partition table backing root volume group.
-#
-# [*storage_auto_extend_pool*]
-#   Enable/disable automatic pool extension using lvm
-#
-# [*storage_pool_autoextend_threshold*]
-#   Auto pool extension threshold (in % of pool size)
-#
-# [*storage_pool_autoextend_percent*]
-#   Extend the pool by specified percentage when threshold is hit.
 #
 class docker(
   $version                           = $docker::params::version,
@@ -398,21 +311,6 @@ class docker(
   $shell_values                      = undef,
   $proxy                             = $docker::params::proxy,
   $no_proxy                          = $docker::params::no_proxy,
-  $storage_driver                    = $docker::params::storage_driver,
-  $dm_basesize                       = $docker::params::dm_basesize,
-  $dm_fs                             = $docker::params::dm_fs,
-  $dm_mkfsarg                        = $docker::params::dm_mkfsarg,
-  $dm_mountopt                       = $docker::params::dm_mountopt,
-  $dm_blocksize                      = $docker::params::dm_blocksize,
-  $dm_loopdatasize                   = $docker::params::dm_loopdatasize,
-  $dm_loopmetadatasize               = $docker::params::dm_loopmetadatasize,
-  $dm_datadev                        = $docker::params::dm_datadev,
-  $dm_metadatadev                    = $docker::params::dm_metadatadev,
-  $dm_thinpooldev                    = $docker::params::dm_thinpooldev,
-  $dm_use_deferred_removal           = $docker::params::dm_use_deferred_removal,
-  $dm_use_deferred_deletion          = $docker::params::dm_use_deferred_deletion,
-  $dm_blkdiscard                     = $docker::params::dm_blkdiscard,
-  $dm_override_udev_sync_check       = $docker::params::dm_override_udev_sync_check,
   $execdriver                        = $docker::params::execdriver,
   $manage_package                    = $docker::params::manage_package,
   $package_source                    = $docker::params::package_source,
@@ -427,19 +325,6 @@ class docker(
   $daemon_environment_files          = [],
   $repo_opt                          = $docker::params::repo_opt,
   $nowarn_kernel                     = $docker::params::nowarn_kernel,
-  $storage_devs                      = $docker::params::storage_devs,
-  $storage_vg                        = $docker::params::storage_vg,
-  $storage_root_size                 = $docker::params::storage_root_size,
-  $storage_data_size                 = $docker::params::storage_data_size,
-  $storage_min_data_size             = $docker::params::storage_min_data_size,
-  $storage_chunk_size                = $docker::params::storage_chunk_size,
-  $storage_growpart                  = $docker::params::storage_growpart,
-  $storage_auto_extend_pool          = $docker::params::storage_auto_extend_pool,
-  $storage_pool_autoextend_threshold = $docker::params::storage_pool_autoextend_threshold,
-  $storage_pool_autoextend_percent   = $docker::params::storage_pool_autoextend_percent,
-  $storage_config                    = $docker::params::storage_config,
-  $storage_config_template           = $docker::params::storage_config_template,
-  $storage_setup_file                = $docker::params::storage_setup_file,
   $service_provider                  = $docker::params::service_provider,
   $service_config                    = $docker::params::service_config,
   $service_config_template           = $docker::params::service_config_template,
@@ -485,36 +370,6 @@ class docker(
 
   if $selinux_enabled {
     validate_re($selinux_enabled, '^(true|false)$', 'selinux_enabled must be true or false')
-  }
-
-  if $storage_driver {
-    validate_re($storage_driver, '^(aufs|devicemapper|btrfs|overlay|overlay2|vfs|zfs)$',
-                'Valid values for storage_driver are aufs, devicemapper, btrfs, overlay, overlay2, vfs, zfs.' )
-  }
-
-  if $dm_fs {
-    validate_re($dm_fs, '^(ext4|xfs)$', 'Only ext4 and xfs are supported currently for dm_fs.')
-  }
-
-  if ($dm_loopdatasize or $dm_loopmetadatasize) and ($dm_datadev or $dm_metadatadev) {
-    fail('You should provide parameters only for loop lvm or direct lvm, not both.')
-  }
-
-  if ($dm_datadev or $dm_metadatadev) and $dm_thinpooldev {
-    fail('You can use the $dm_thinpooldev parameter, or the $dm_datadev and $dm_metadatadev parameter pair, but you cannot use both.')
-  }
-
-  if ($dm_datadev or $dm_metadatadev) {
-    notice('The $dm_datadev and $dm_metadatadev parameter pair are deprecated.  The $dm_thinpooldev parameter should be used instead.')
-  }
-
-  if ($dm_datadev and !$dm_metadatadev) or (!$dm_datadev and $dm_metadatadev) {
-    fail('You need to provide both $dm_datadev and $dm_metadatadev parameters for direct lvm.')
-  }
-
-  if ($dm_basesize or $dm_fs or $dm_mkfsarg or $dm_mountopt or $dm_blocksize or $dm_loopdatasize or
-      $dm_loopmetadatasize or $dm_datadev or $dm_metadatadev) and ($storage_driver != 'devicemapper') {
-    fail('Values for dm_ variables will be ignored unless storage_driver is set to devicemapper.')
   }
 
   if($tls_enable) {
