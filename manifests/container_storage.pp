@@ -14,6 +14,7 @@ class docker::container_storage (
   $auto_extend_pool = 'yes',
   $pool_autoextend_threshold = '60',
   $pool_autoextend_percent = '20',
+  $wipe_signatures = true,
   $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
   $container_storage_output_file = '/etc/sysconfig/docker-storage',
   $container_storage_setup_script = '/usr/local/bin/container-storage-setup.sh',
@@ -66,7 +67,8 @@ class docker::container_storage (
         'growpart'                  => $growpart,
         'auto_extend_pool'          => $auto_extend_pool,
         'pool_autoextend_threshold' => $pool_autoextend_threshold,
-        'pool_autoextend_percent'   => $pool_autoextend_percent
+        'pool_autoextend_percent'   => $pool_autoextend_percent,
+        'wipe_signatures'           => $wipe_signatures
         })
     }
 

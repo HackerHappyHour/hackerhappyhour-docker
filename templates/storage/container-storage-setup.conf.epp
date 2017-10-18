@@ -11,7 +11,8 @@
       $growpart,
       String $auto_extend_pool,
       $pool_autoextend_threshold,
-      $pool_autoextend_percent
+      $pool_autoextend_percent,
+      $wipe_signatures
 | -%>
 # This file is managed by Puppet and local changes
 # may be overwritten
@@ -48,4 +49,6 @@
 <% if $pool_autoextend_threshold {%>POOL_AUTOEXTEND_THRESHOLD=<%= $pool_autoextend_threshold %>
 <% } -%>
 <% if $pool_autoextend_percent {%>POOL_AUTOEXTEND_PERCENT=<%= $pool_autoextend_percent %>
+<% } -%>
+<% if $wipe_signatures {%>WIPE_SIGNATURES=<%= $wipe_signatures %>
 <% } -%>
