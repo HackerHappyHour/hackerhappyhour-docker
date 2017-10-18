@@ -18,6 +18,7 @@ class docker::container_storage (
   $container_storage_output_file = '/etc/sysconfig/docker-storage',
   $container_storage_setup_script = '/usr/local/bin/container-storage-setup.sh',
   $container_storage_setup_child_script = '/usr/local/bin/css-child-read-write.sh',
+  $container_storage_setup_libcss_sscript = '/usr/local/bin/libcss.sh',
   $exec_path = ['/usr/local/bin', '/usr/bin']
 ){
 
@@ -31,6 +32,14 @@ class docker::container_storage (
     }
 
     file {$container_storage_setup_child_script:
+      ensure => 'present',
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0755',
+      source => 'puppet:///modules/docker/css-child-read-write.sh'
+    }
+
+    file {$container_storage_libcss_script:
       ensure => 'present',
       owner  => 'root',
       group  => 'root',
@@ -65,7 +74,7 @@ class docker::container_storage (
       command => "${container_storage_setup_script} ${container_storage_setup_config_file} ${container_storage_output_file}",
       path    => $exec_path,
       unless  => "test -f ${container_storage_output_file}",
-      require => File[$container_storage_setup_script, $container_storage_setup_child_script, $container_storage_setup_config_file]
+      require => File[$container_storage_setup_script, $container_storage_setup_child_script, $container_storage_setup_config_file, $container_storage_setup_libcss_script]
     }
   }
 
