@@ -27,7 +27,7 @@
 <% } -%>
 <% if $devs {%>DEVS="<%= $devs %>"
 <% } -%>
-<% if $container_thinpool {%>DEVS=<%= $container_thinpool %>
+<% if $container_thinpool {%>CONTAINER_THINPOOL=<%= $container_thinpool %>
 <% } -%>
 <% if $vg {%>VG=<%= $vg %>
 <% } -%>
