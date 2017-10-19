@@ -299,7 +299,7 @@ class docker::params {
       'Ubuntu' => ['cgroup-lite', 'apparmor'],
       default  => [],
     },
-    'RedHat' => ['device-mapper'],
+    'RedHat' => ['device-mapper', 'container-storage-setup'],
     default  => [],
   }
 
