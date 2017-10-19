@@ -69,13 +69,14 @@ class docker::container_storage (
         'pool_autoextend_threshold' => $pool_autoextend_threshold,
         'pool_autoextend_percent'   => $pool_autoextend_percent,
         'wipe_signatures'           => $wipe_signatures
-        })
+        }),
+      before  => Exec[$container_storage_setup_script]
     }
 
-    Exec{$container_storage_setup_script:
+    exec {$container_storage_setup_script:
       command => $container_storage_setup_script,
       path    => $exec_path,
-      unless  => "test -f ${container_storage_output_file}",
+      unless  => "test -e ${container_storage_output_file}",
       require => File[$container_storage_setup_script, $container_storage_setup_child_script, $container_storage_setup_config_file, $container_storage_setup_libcss_script]
     }
   }
