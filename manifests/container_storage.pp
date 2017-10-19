@@ -79,7 +79,7 @@ class docker::container_storage (
       pass     => '2',
       remounts => true,
       atboot   => true,
-      before   => [File[$root_mount_dir],Exec[$container_storage_setup_script]],
+      before   => [File[$root_mount_dir],Exec[$css]],
       require  => [Filesystem[$root_fs],Exec[$root_mount_dir]],
     }
 
@@ -124,7 +124,7 @@ class docker::container_storage (
       before  => Exec[$css]
     }
 
-    exec {$css;
+    exec {$css:
       command => 'container-storage-setup',
       path    => $exec_path,
       unless  => "test -e ${container_storage_setup_output_file}",

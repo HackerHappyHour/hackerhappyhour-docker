@@ -356,8 +356,8 @@ class docker(
   $pool_autoextend_threshold         = '60',
   $pool_autoextend_percent           = '20',
   $wipe_signatures                   = true,
-  $container_storage_setup_config_file = "/etc/sysconfig/docker-storage-setup",
-  $container_storage_setup_output_file = "/etc/sysconfig/docker-storage",
+  $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
+  $container_storage_setup_output_file = '/etc/sysconfig/docker-storage',
   $exec_path = ['/usr/local/bin', '/usr/bin']
 ) inherits docker::params {
 
