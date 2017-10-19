@@ -116,7 +116,7 @@ class docker::container_storage (
       source => 'puppet:///modules/docker/libcss.sh'
     }
 
-    if (!$provision_container_root_lv && $devs != undef){
+    if (!$provision_container_root_lv and $devs != undef){
       $create_devs = $devs
     } else {
       $create_devs = false
