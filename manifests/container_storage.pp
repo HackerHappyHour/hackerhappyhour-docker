@@ -25,10 +25,8 @@ class docker::container_storage (
   $pool_autoextend_percent = $docker::pool_autoextend_percent,
   $wipe_signatures = $docker::wipe_signatures,
   $container_storage_setup_config_file = $docker::container_storage_setup_config_file,
-  $container_storage_output_file = $docker::container_storage_output_file,
-  $container_storage_setup_script = $docker::container_storage_setup_script,
-  $container_storage_setup_child_script = $docker::container_storage_setup_child_script,
-  $container_storage_setup_libcss_script = $docker::container_storage_setup_libcss_script,
+  $container_storage_setup_output_file = $docker::container_storage_setup_output_file,
+  $css = 'container-storage-setup',
   $exec_path = $docker::exec_path
 ){
 
@@ -36,13 +34,13 @@ class docker::container_storage (
     include lvm
     physical_volume{shell_split($devs):
       ensure => 'present',
-      before => [Exec[$container_storage_setup_script], Volume_group[$vg]]
+      before => [Exec[$css], Volume_group[$vg]]
     }
 
     volume_group {$vg:
       ensure           => 'present',
       physical_volumes => $devs,
-      before           => [Exec[$container_storage_setup_script],Logical_volume[$root_lv]]
+      before           => [Exec[$css],Logical_volume[$root_lv]]
     }
 
     logical_volume { $root_lv:
@@ -52,7 +50,7 @@ class docker::container_storage (
       size            => $root_lv_size,
       size_is_minsize => $root_lv_size_is_minsize,
       require         => Volume_group[$vg],
-      before          => Exec[$container_storage_setup_script]
+      before          => Exec[$css]
     }
 
     $root_fs = "/dev/mapper/${vg}-${root_lv}"
@@ -61,7 +59,7 @@ class docker::container_storage (
       fs_type      => $root_fs_type,
       options      => $root_fs_options,
       volume_group => $vg,
-      before       => Exec[$container_storage_setup_script],
+      before       => Exec[$css],
       require      => Logical_volume[$root_lv]
     }
 
@@ -69,7 +67,7 @@ class docker::container_storage (
       command => "mkdir -p ${root_mount_dir} && chmod 0755 ${root_mount_dir}",
       path    => ['/bin', '/usr/lib', '/usr/bin', '/sbin', '/usr/local/bin'],
       unless  => "test -d ${root_mount_dir}",
-      before  => Exec[$container_storage_setup_script]
+      before  => Exec[$css]
     }
 
     mount {$root_mount_dir:
@@ -88,7 +86,7 @@ class docker::container_storage (
     file {$root_mount_dir:
       ensure  => 'directory',
       require => Mount[$root_mount_dir],
-      before  => Exec[$container_storage_setup_script]
+      before  => Exec[$css]
     }
 
   }
@@ -123,13 +121,13 @@ class docker::container_storage (
         'pool_autoextend_percent'   => $pool_autoextend_percent,
         'wipe_signatures'           => $wipe_signatures
         }),
-      before  => Exec[$container_storage_setup_script]
+      before  => Exec[$css]
     }
 
-    exec {$container_storage_setup_script:
+    exec {$css;
       command => 'container-storage-setup',
       path    => $exec_path,
-      unless  => "test -e ${container_storage_output_file}",
+      unless  => "test -e ${container_storage_setup_output_file}",
       require => File[$container_storage_setup_config_file]
     }
   }
