@@ -116,6 +116,13 @@ class docker::container_storage (
       source => 'puppet:///modules/docker/libcss.sh'
     }
 
+    if (!$provision_container_root_lv && $devs != undef){
+      $create_devs = $devs
+    } else {
+      $create_devs = false
+    }
+
+
     file {$container_storage_setup_config_file:
       ensure  => 'present',
       owner   => 'root',
@@ -124,7 +131,7 @@ class docker::container_storage (
       content => epp('docker/storage/container-storage-setup.conf.epp', {
         'storage_driver'            => $storage_driver,
         'extra_storage_options'     => $extra_storage_options,
-        'devs'                      => $devs,
+        'devs'                      => $create_devs,
         'container_thinpool'        => $container_thinpool,
         'vg'                        => $vg,
         'root_size'                 => $root_size,
