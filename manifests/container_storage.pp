@@ -1,9 +1,18 @@
 class docker::container_storage (
   $manage_storage = false,
   $storage_driver = undef,
+  $provision_container_root_lv = true,
+  $root_fs_options = undef,
+  $root_fs_type = 'xfs',
+  $root_fs_mount_options = 'defaults,nodev',
+  $root_lv = 'data',
+  $root_lv_size = '2G',
+  $root_lv_initial_size = '2G',
+  $root_lv_size_is_minsize = true,
+  $root_mount_dir = '/var/lib/docker',
   $extra_storage_options = undef,
   $devs = undef,
-  $container_thinpool = 'container-thinpool',
+  $container_thinpool = 'thinpool',
   $vg = undef,
   $root_size = '8G',
   $data_size = '40%FREE',
@@ -22,6 +31,65 @@ class docker::container_storage (
   $container_storage_setup_libcss_script = '/usr/local/bin/libcss.sh',
   $exec_path = ['/usr/local/bin', '/usr/bin']
 ){
+
+  if $provision_container_root_lv {
+    include lvm
+    physical_volume{shell_split($storage_devs):
+      ensure => 'present',
+      before => [Exec[$container_storage_setup_script], Volume_group[$storage_vg]]
+    }
+
+    volume_group {$storage_vg:
+      ensure           => 'present',
+      physical_volumes => $storage_devs,
+      before           => [Exec[$container_storage_setup_script],Logical_volume[$root_lv]]
+    }
+
+    logical_volume { $root_lv:
+      ensure          => 'present',
+      volume_group    => $storage_vg,
+      initial_size    => $root_lv_initial_size,
+      size            => $root_lv_size,
+      size_is_minsize => $root_lv_size_is_minsize,
+      require         => Volume_group[$storage_vg],
+      before          => Exec[$container_storage_setup_script]
+    }
+
+    $root_fs = "/dev/mapper/${storage_vg}-${root_lv}"
+    filesystem { $root_fs:
+      ensure       => 'present',
+      fs_type      => $root_fs_type,
+      options      => $root_fs_options,
+      volume_group => $storage_vg,
+      before       => Exec[$container_storage_setup_script]
+    }
+
+    exec {$root_mount_dir:
+      command => "mkdir -p ${root_mount_dir} && chmod 0755 ${root_mount_dir}",
+      path    => ['/bin', '/usr/lib', '/usr/bin', '/sbin', '/usr/local/bin'],
+      unless  => "test -d ${root_mount_dir}",
+      before  => Exec[$container_storage_setup_script]
+    }
+
+    mount {$root_mount_dir:
+      ensure   => 'mounted',
+      fstype   => $root_fs_type,
+      device   => $root_fs,
+      options  => $root_fs_mount_options,
+      dump     => '1',
+      pass     => '2',
+      remounts => true,
+      atboot   => true,
+      before   => [File[$root_mount_dir],Exec[$container_storage_setup_script]],
+      require  => [Filesystem[$root_fs],Exec[$root_mount_dir]],
+    }
+
+    file {$root_mount_dir:
+      ensure => 'directory',
+      before => Exec[$container_storage_setup_script]
+    }
+
+  }
 
   if $manage_storage {
     file {$container_storage_setup_script:
