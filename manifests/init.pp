@@ -356,11 +356,6 @@ class docker(
   $pool_autoextend_threshold         = '60',
   $pool_autoextend_percent           = '20',
   $wipe_signatures                   = true,
-  $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
-  $container_storage_output_file = '/etc/sysconfig/docker-storage',
-  $container_storage_setup_script = '/usr/local/bin/container-storage-setup.sh',
-  $container_storage_setup_child_script = '/usr/local/bin/css-child-read-write.sh',
-  $container_storage_setup_libcss_script = '/usr/local/bin/libcss.sh',
   $exec_path = ['/usr/local/bin', '/usr/bin']
 ) inherits docker::params {
 

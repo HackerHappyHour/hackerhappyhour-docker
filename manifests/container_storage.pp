@@ -94,36 +94,12 @@ class docker::container_storage (
   }
 
   if $manage_storage {
-    file {$container_storage_setup_script:
-      ensure => 'present',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
-      source => 'puppet:///modules/docker/container-storage-setup.sh'
-    }
-
-    file {$container_storage_setup_child_script:
-      ensure => 'present',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
-      source => 'puppet:///modules/docker/css-child-read-write.sh'
-    }
-
-    file {$container_storage_setup_libcss_script:
-      ensure => 'present',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0755',
-      source => 'puppet:///modules/docker/libcss.sh'
-    }
 
     if (!$provision_container_root_lv and $devs != undef){
       $create_devs = $devs
     } else {
       $create_devs = false
     }
-
 
     file {$container_storage_setup_config_file:
       ensure  => 'present',
@@ -151,10 +127,10 @@ class docker::container_storage (
     }
 
     exec {$container_storage_setup_script:
-      command => $container_storage_setup_script,
+      command => 'container-storage-setup',
       path    => $exec_path,
       unless  => "test -e ${container_storage_output_file}",
-      require => File[$container_storage_setup_script, $container_storage_setup_child_script, $container_storage_setup_config_file, $container_storage_setup_libcss_script]
+      require => File[$container_storage_setup_config_file]
     }
   }
 
