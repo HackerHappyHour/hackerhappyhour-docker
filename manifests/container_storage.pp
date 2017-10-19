@@ -34,33 +34,33 @@ class docker::container_storage (
 
   if $provision_container_root_lv {
     include lvm
-    physical_volume{shell_split($storage_devs):
+    physical_volume{shell_split($devs):
       ensure => 'present',
-      before => [Exec[$container_storage_setup_script], Volume_group[$storage_vg]]
+      before => [Exec[$container_storage_setup_script], Volume_group[$vg]]
     }
 
-    volume_group {$storage_vg:
+    volume_group {$vg:
       ensure           => 'present',
-      physical_volumes => $storage_devs,
+      physical_volumes => $devs,
       before           => [Exec[$container_storage_setup_script],Logical_volume[$root_lv]]
     }
 
     logical_volume { $root_lv:
       ensure          => 'present',
-      volume_group    => $storage_vg,
+      volume_group    => $vg,
       initial_size    => $root_lv_initial_size,
       size            => $root_lv_size,
       size_is_minsize => $root_lv_size_is_minsize,
-      require         => Volume_group[$storage_vg],
+      require         => Volume_group[$vg],
       before          => Exec[$container_storage_setup_script]
     }
 
-    $root_fs = "/dev/mapper/${storage_vg}-${root_lv}"
+    $root_fs = "/dev/mapper/${vg}-${root_lv}"
     filesystem { $root_fs:
       ensure       => 'present',
       fs_type      => $root_fs_type,
       options      => $root_fs_options,
-      volume_group => $storage_vg,
+      volume_group => $vg,
       before       => Exec[$container_storage_setup_script]
     }
 
