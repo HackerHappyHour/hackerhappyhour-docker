@@ -61,7 +61,8 @@ class docker::container_storage (
       fs_type      => $root_fs_type,
       options      => $root_fs_options,
       volume_group => $vg,
-      before       => Exec[$container_storage_setup_script]
+      before       => Exec[$container_storage_setup_script],
+      require      => Logical_volume[$root_lv]
     }
 
     exec {$root_mount_dir:
@@ -85,8 +86,9 @@ class docker::container_storage (
     }
 
     file {$root_mount_dir:
-      ensure => 'directory',
-      before => Exec[$container_storage_setup_script]
+      ensure  => 'directory',
+      require => Mount[$root_mount_dir],
+      before  => Exec[$container_storage_setup_script]
     }
 
   }
