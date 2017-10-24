@@ -8,7 +8,7 @@ class docker::repos(
   $css_repo_enabled = $docker::css_repo_enabled,
   $css_sslverify = $docker::css_sslverify,
   $css_gpgcheck = $docker::css_gpgcheck,
-  $css_repogpgcheck = $docker::repogpgcheck
+  $css_repogpgcheck = $docker::css_repogpgcheck
 ){
 
   ensure_packages($docker::prerequired_packages)
