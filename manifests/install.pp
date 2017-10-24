@@ -107,7 +107,7 @@ class docker::install {
           ensure  => $docker::css_ensure,
           name    => $docker::css_name,
           require => Package['docker']
-        }
+        })
       }
 
     } else {

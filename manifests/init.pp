@@ -358,7 +358,14 @@ class docker(
   $wipe_signatures                   = true,
   $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
   $container_storage_setup_output_file = '/etc/sysconfig/docker-storage',
-  $exec_path = ['/usr/local/bin', '/usr/bin']
+  $exec_path = ['/usr/local/bin', '/usr/bin'],
+  $css_name = 'container-storage-setup',
+  $css_ensure = 'present',
+  $css_baseurl = 'https://packagecloud.io/LongLiveCHIEF/container-storage-setup/el/7/x86_64',
+  $css_repo_enabled = true,
+  $css_sslverify = true,
+  $css_gpgcheck = true,
+  $css_repogpgcheck = true
 ) inherits docker::params {
 
   validate_string($version)
@@ -410,8 +417,8 @@ class docker(
   }
 
   class { 'docker::repos': }
-  -> class { 'docker::container_storage': }
   -> class { 'docker::install': }
+  -> class { 'docker::container_storage': }
   -> class { 'docker::config': }
   ~> class { 'docker::service': }
   contain 'docker::repos'

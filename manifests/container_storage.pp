@@ -26,27 +26,20 @@ class docker::container_storage (
   $wipe_signatures = $docker::wipe_signatures,
   $container_storage_setup_config_file = $docker::container_storage_setup_config_file,
   $container_storage_setup_output_file = $docker::container_storage_setup_output_file,
-  $css_name = 'container-storage-setup',
   $exec_path = $docker::exec_path,
-  $css_ensure = 'present',
-  $css_baseurl = 'https://packagecloud.io/LongLiveCHIEF/container-storage-setup/el/7/x86_64',
-  $css_repo_enabled = true,
-  $css_sslverify = true,
-  $css_gpgcheck = true,
-  $css_repogpgcheck = true
 ){
 
   if $provision_container_root_lv {
     include lvm
     physical_volume{shell_split($devs):
       ensure => 'present',
-      before => [Exec[$css], Volume_group[$vg]]
+      before => [Exec['container-storage-setup'], Volume_group[$vg]]
     }
 
     volume_group {$vg:
       ensure           => 'present',
       physical_volumes => $devs,
-      before           => [Exec[$css],Logical_volume[$root_lv]]
+      before           => [Exec['container-storage-setup'],Logical_volume[$root_lv]]
     }
 
     logical_volume { $root_lv:
@@ -56,7 +49,7 @@ class docker::container_storage (
       size            => $root_lv_size,
       size_is_minsize => $root_lv_size_is_minsize,
       require         => Volume_group[$vg],
-      before          => Exec[$css]
+      before          => Exec['container-storage-setup']
     }
 
     $root_fs = "/dev/mapper/${vg}-${root_lv}"
@@ -65,7 +58,7 @@ class docker::container_storage (
       fs_type      => $root_fs_type,
       options      => $root_fs_options,
       volume_group => $vg,
-      before       => Exec[$css],
+      before       => Exec['container-storage-setup'],
       require      => Logical_volume[$root_lv]
     }
 
@@ -73,7 +66,7 @@ class docker::container_storage (
       command => "mkdir -p ${root_mount_dir} && chmod 0755 ${root_mount_dir}",
       path    => ['/bin', '/usr/lib', '/usr/bin', '/sbin', '/usr/local/bin'],
       unless  => "test -d ${root_mount_dir}",
-      before  => Exec[$css]
+      before  => Exec['container-storage-setup']
     }
 
     mount {$root_mount_dir:
@@ -85,14 +78,14 @@ class docker::container_storage (
       pass     => '2',
       remounts => true,
       atboot   => true,
-      before   => [File[$root_mount_dir],Exec[$css]],
+      before   => [File[$root_mount_dir],Exec['container-storage-setup']],
       require  => [Filesystem[$root_fs],Exec[$root_mount_dir]],
     }
 
     file {$root_mount_dir:
       ensure  => 'directory',
       require => Mount[$root_mount_dir],
-      before  => Exec[$css]
+      before  => Exec['container-storage-setup']
     }
 
   }
@@ -127,14 +120,16 @@ class docker::container_storage (
         'pool_autoextend_percent'   => $pool_autoextend_percent,
         'wipe_signatures'           => $wipe_signatures
         }),
-      before  => Exec[$css]
+      before  => Exec['container-storage-setup']
     }
 
-    exec {$css:
-      command => 'container-storage-setup',
-      path    => $exec_path,
-      unless  => "test -e ${container_storage_setup_output_file}",
-      require => File[$container_storage_setup_config_file]
+    if($::osfamily == 'RedHat' and $docker::css_enabled){
+      exec {'container-storage-setup':
+        command => 'container-storage-setup',
+        path    => $exec_path,
+        unless  => "test -e ${container_storage_setup_output_file}",
+        require => File[$container_storage_setup_config_file]
+      }
     }
   }
 
