@@ -26,8 +26,14 @@ class docker::container_storage (
   $wipe_signatures = $docker::wipe_signatures,
   $container_storage_setup_config_file = $docker::container_storage_setup_config_file,
   $container_storage_setup_output_file = $docker::container_storage_setup_output_file,
-  $css = 'container-storage-setup',
-  $exec_path = $docker::exec_path
+  $css_name = 'container-storage-setup',
+  $exec_path = $docker::exec_path,
+  $css_ensure = 'present',
+  $css_baseurl = 'https://packagecloud.io/LongLiveCHIEF/container-storage-setup/el/7/x86_64',
+  $css_repo_enabled = true,
+  $css_sslverify = true,
+  $css_gpgcheck = true,
+  $css_repogpgcheck = true
 ){
 
   if $provision_container_root_lv {

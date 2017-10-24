@@ -415,8 +415,8 @@ class docker(
   -> class { 'docker::config': }
   ~> class { 'docker::service': }
   contain 'docker::repos'
-  contain 'docker::container_storage'
   contain 'docker::install'
+  contain 'docker::container_storage'
   contain 'docker::config'
   contain 'docker::service'
 

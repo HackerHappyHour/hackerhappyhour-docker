@@ -1,7 +1,15 @@
 # == Class: docker::repos
 #
 #
-class docker::repos {
+class docker::repos(
+  $css_name = $docker::css_name,
+  $css_ensure = $docker::css_ensure,
+  $css_baseurl = $docker::css_baseurl,
+  $css_repo_enabled = $docker::css_repo_enabled,
+  $css_sslverify = $docker::css_sslverify,
+  $css_gpgcheck = $docker::css_gpgcheck,
+  $css_repogpgcheck = $docker::repogpgcheck
+){
 
   ensure_packages($docker::prerequired_packages)
 
@@ -61,6 +69,20 @@ class docker::repos {
         } else {
           $baseurl = $docker::package_source_location
           $gpgkey = $docker::package_key_source
+        }
+        if ($docker::manage_storage){
+
+          yumrepo {'container-storage-setup':
+            ensure        => $css_ensure,
+            descr         => 'Service to set up storage for Docker and other container systems',
+            name          => $css_name,
+            baseurl       => $css_baseurl,
+            enabled       => $css_repo_enabled,
+            sslverify     => $css_sslverify,
+            gpgcheck      => $css_gpgcheck,
+            repo_gpgcheck => $css_repogpgcheck,
+          }
+          Yumrepo['container-storage-setup'] -> Package['container-storage-setup']
         }
         if ($docker::use_upstream_package_source) {
           yumrepo { 'docker':
