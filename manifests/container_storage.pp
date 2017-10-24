@@ -65,7 +65,6 @@ class docker::container_storage (
       exec {'container-storage-setup':
         command => 'container-storage-setup',
         path    => $exec_path,
-        unless  => "test -e ${container_storage_setup_output_file}",
         require => File[$container_storage_setup_config_file]
       }
   }
