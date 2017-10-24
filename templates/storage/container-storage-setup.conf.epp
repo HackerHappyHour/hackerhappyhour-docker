@@ -1,18 +1,22 @@
-<%- | String $storage_driver,
-      String $extra_storage_options,
-      String $devs,
-      String $container_thinpool,
-      String $vg,
-      String $root_size,
-      String $data_size,
-      String $min_data_size,
-      String $pool_meta_size,
-      String $chunk_size,
+<%- | $storage_driver,
+      $container_thinpool,
+      $extra_storage_options,
+      $devs,
+      $vg,
       $growpart,
-      String $auto_extend_pool,
+      $auto_extend_pool,
       $pool_autoextend_threshold,
       $pool_autoextend_percent,
-      $wipe_signatures
+      $chunk_size,
+      $device_wait_timeout,
+      $wipe_signatures,
+      $container_root_lv_name,
+      $container_root_lv_mount_path,
+      $container_root_lv_size,
+      $root_size,
+      $data_size,
+      $min_data_size,
+      $pool_meta_size
 | -%>
 # This file is managed by Puppet and local changes
 # may be overwritten
@@ -51,4 +55,12 @@
 <% if $pool_autoextend_percent {%>POOL_AUTOEXTEND_PERCENT=<%= $pool_autoextend_percent %>
 <% } -%>
 <% if $wipe_signatures {%>WIPE_SIGNATURES=<%= $wipe_signatures %>
+<% } -%>
+<% if $device_wait_timeout {%>DEVICE_WAIT_TIMEOUT=<%= $device_wait_timeout %>
+<% } -%>
+<% if $container_root_lv_name {%>CONTAINER_ROOT_LV_NAME=<%= $container_root_lv_name %>
+<% } -%>
+<% if $container_root_lv_mount_path {%>CONTAINER_ROOT_LV_MOUNT_PATH=<%= $container_root_lv_mount_path %>
+<% } -%>
+<% if $container_root_lv_size {%>CONTAINER_ROOT_LV_SIZE=<%= $container_root_lv_size %>
 <% } -%>
