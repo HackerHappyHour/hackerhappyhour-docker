@@ -123,7 +123,7 @@ class docker::container_storage (
       before  => Exec['container-storage-setup']
     }
 
-    if($::osfamily == 'RedHat' and $docker::css_enabled){
+    if($::osfamily == 'RedHat' and $docker::css_ensure != 'absent'){
       exec {'container-storage-setup':
         command => 'container-storage-setup',
         path    => $exec_path,
