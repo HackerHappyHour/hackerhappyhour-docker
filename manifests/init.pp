@@ -353,7 +353,7 @@ class docker(
   $pool_meta_size                    = '16M',
   $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
   $container_storage_setup_output_file = '/etc/sysconfig/docker-storage',
-  $exec_path = ['/usr/local/bin', '/usr/bin'],
+  $exec_path = ['/usr/local/bin', '/usr/bin', '/usr/sbin'],
   $css_name = 'container-storage-setup',
   $css_ensure = 'present',
   $css_baseurl = 'https://packagecloud.io/LongLiveCHIEF/container-storage-setup/el/7/x86_64',
