@@ -10,3 +10,4 @@ doc
 log
 Gemfile.lock
 coverage/*
+Dockerfile.override
