@@ -64,8 +64,9 @@ class docker::container_storage (
 
       exec {'container-storage-setup':
         command => 'container-storage-setup',
+        refreshonly => true,
         path    => $exec_path,
-        require => File[$container_storage_setup_config_file]
+        subscribe => File[$container_storage_setup_config_file]
       }
   }
 
