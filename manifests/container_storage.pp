@@ -50,7 +50,6 @@ class docker::container_storage (
         'chunk_size'                   => $chunk_size,
         'device_wait_timeout'          => $device_wait_timeout,
         'wipe_signatures'              => $wipe_signatures,
-        'root_size'                    => $root_size,
         'container_root_lv_name'       => $container_root_lv_name,
         'container_root_lv_mount_path' => $container_root_lv_mount_path,
         'container_root_lv_size'       => $container_root_lv_size,
@@ -63,10 +62,10 @@ class docker::container_storage (
     }
 
       exec {'container-storage-setup':
-        command => 'container-storage-setup',
+        command     => 'container-storage-setup',
         refreshonly => true,
-        path    => $exec_path,
-        subscribe => File[$container_storage_setup_config_file]
+        path        => $exec_path,
+        subscribe   => File[$container_storage_setup_config_file]
       }
   }
 
