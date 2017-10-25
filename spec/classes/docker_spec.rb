@@ -28,10 +28,10 @@ describe 'docker', :type => :class do
           :osfamily               => 'Debian',
           :operatingsystem        => 'Ubuntu',
           :lsbdistid              => 'Ubuntu',
-          :lsbdistcodename        => 'maverick',
+          :lsbdistcodename        => 'xenial',
           :kernelrelease          => '3.8.0-29-generic',
-          :operatingsystemrelease => '10.04',
-          :operatingsystemmajrelease => '10',
+          :operatingsystemrelease => '16.04',
+          :operatingsystemmajrelease => '16',
         } }
         service_config_file = '/etc/default/docker'
         storage_config_file = '/etc/default/docker'
