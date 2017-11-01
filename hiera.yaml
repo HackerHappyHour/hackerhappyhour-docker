@@ -1,0 +1,24 @@
+---
+version: 5
+
+defaults:
+  datadir: data
+  data_hash: yaml_data
+
+hierarchy:
+  - name: "Per-OS Release Defaults"
+    path: "os/%{facts.os.family}/%{facts.os.name}/%{facts.os.release.major.minor}.yaml"
+
+  - name: "Per-OS Codename Defaults"
+    path: "os/%{facts.os.family}/%{facts.os.name}/%{facts.os.distro.codename}.yaml"
+
+  - name: "Per-OS Defaults"
+    path: "os/%{facts.os.family}/%{facts.os.name}.yaml"
+
+  - name: "OS Family Defaults"
+    path: "os/%{facts.os.family}.yaml"
+
+  - name: "Common Data"
+    path: "common.yaml"
+
+
