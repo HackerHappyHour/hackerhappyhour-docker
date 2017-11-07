@@ -1,0 +1,15 @@
+<%- | $exec_start,
+      $environment_file
+| -%>
+[Unit]
+Description=Docker Storage Setup
+After=cloud-init.service
+Before=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=<%= $exec_start -%>
+EnvironmentFile=-<%= $environment_file -%>
+
+[Install]
+WantedBy=multi-user.target
