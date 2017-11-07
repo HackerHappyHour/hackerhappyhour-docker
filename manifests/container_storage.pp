@@ -65,7 +65,7 @@ class docker::container_storage (
       ensure  => 'present',
       owner   => 'root',
       group   => 'root',
-      mode    => '0644'
+      mode    => '0644',
       content => epp('docker/storage/docker-storage-setup.service.epp',{
         'exec_start'       => '/usr/bin/container-storage-setup',
         'environment_file' => $container_storage_setup_config_file
