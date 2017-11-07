@@ -2,6 +2,7 @@
 #
 #
 class docker::repos(
+  $manage_css_repo = $docker::manage_css_repo,
   $css_name = $docker::css_name,
   $css_ensure = $docker::css_ensure,
   $css_baseurl = $docker::css_baseurl,

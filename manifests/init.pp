@@ -354,6 +354,7 @@ class docker(
   $container_storage_setup_config_file = '/etc/sysconfig/docker-storage-setup',
   $container_storage_setup_output_file = '/etc/sysconfig/docker-storage',
   $exec_path = ['/usr/local/bin', '/usr/bin', '/usr/sbin'],
+  $manage_css_repo = true,
   $manage_css_package = true,
   $css_name = 'container-storage-setup',
   $css_ensure = 'present',
