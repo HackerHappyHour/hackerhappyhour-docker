@@ -57,8 +57,7 @@ class docker::container_storage (
         'data_size'                    => $data_size,
         'min_data_size'                => $min_data_size,
         'pool_meta_size'               => $pool_meta_size
-        }),
-      before  => Exec['container-storage-setup']
+        })
     }
 
     file {'/etc/systemd/system/docker-storage-setup.service':
@@ -69,7 +68,8 @@ class docker::container_storage (
       content => epp('docker/storage/docker-storage-setup.service.epp',{
         'exec_start'       => '/usr/bin/container-storage-setup',
         'environment_file' => $container_storage_setup_config_file
-      })
+      }),
+      require => File[$container_storage_setup_config_file]
     }
 
   }
