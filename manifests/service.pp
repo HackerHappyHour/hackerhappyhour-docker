@@ -81,6 +81,7 @@ class docker::service (
   $tls_cacert                        = $docker::tls_cacert,
   $tls_cert                          = $docker::tls_cert,
   $tls_key                           = $docker::tls_key,
+  $manage_storage                    = $docker::manage_storage,
 ) {
 
   unless $::osfamily =~ /(Debian|RedHat|Archlinux|Gentoo)/ {
@@ -144,6 +145,15 @@ class docker::service (
       force   => true,
       content => template($service_config_template),
       notify  => $_manage_service,
+    }
+  }
+
+  if $manage_storage {
+    service {'docker-storage-setup':
+      ensure => 'running',
+      name   => 'docker-storage-setup',
+      enable => true,
+      before => Service['docker']
     }
   }
 
