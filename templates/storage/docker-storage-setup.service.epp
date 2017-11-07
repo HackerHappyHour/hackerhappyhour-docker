@@ -8,8 +8,8 @@ Before=docker.service
 
 [Service]
 Type=oneshot
-ExecStart=<%= $exec_start -%>
-EnvironmentFile=-<%= $environment_file -%>
+ExecStart=<%= $exec_start %>
+EnvironmentFile=-<%= $environment_file %>
 
 [Install]
 WantedBy=multi-user.target
