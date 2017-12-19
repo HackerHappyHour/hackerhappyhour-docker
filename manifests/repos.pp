@@ -1,7 +1,18 @@
 # == Class: docker::repos
 #
 #
-class docker::repos {
+class docker::repos(
+  $manage_css_repo = $docker::manage_css_repo,
+  $css_name = $docker::css_name,
+  $css_ensure = $docker::css_ensure,
+  $css_baseurl = $docker::css_baseurl,
+  $css_repo_enabled = $docker::css_repo_enabled,
+  $css_sslverify = $docker::css_sslverify,
+  $css_gpgcheck = $docker::css_gpgcheck,
+  $css_repogpgcheck = $docker::css_repogpgcheck,
+  $css_apt_location = $docker::css_apt_location,
+  $css_apt_release = $docker::css_apt_release,
+  $css_apt_repos = $docker::css_apt_repos){
 
   ensure_packages($docker::prerequired_packages)
 
@@ -50,6 +61,16 @@ class docker::repos {
           Exec['apt_update'] -> Package[$docker::prerequired_packages]
           Apt::Source['docker'] -> Package['docker']
         }
+        if $docker::manage_css_repo {
+          apt::source {'container-storage-setup':
+            comment  => 'Service to set up storage for Docker and other cntainer systems',
+            location => $css_apt_location,
+            release  => $css_apt_release,
+            repos    => $css_apt_repos
+          }
+          Apt::Source['container-storage-setup'] -> Package['container-storage-setup']
+        }
+
       }
 
     }
@@ -61,6 +82,20 @@ class docker::repos {
         } else {
           $baseurl = $docker::package_source_location
           $gpgkey = $docker::package_key_source
+        }
+        if ($docker::manage_css_repo){
+
+          yumrepo {'container-storage-setup':
+            ensure        => $css_ensure,
+            descr         => 'Service to set up storage for Docker and other container systems',
+            name          => $css_name,
+            baseurl       => $css_baseurl,
+            enabled       => $css_repo_enabled,
+            sslverify     => $css_sslverify,
+            gpgcheck      => $css_gpgcheck,
+            repo_gpgcheck => $css_repogpgcheck,
+          }
+          Yumrepo['container-storage-setup'] -> Package['container-storage-setup']
         }
         if ($docker::use_upstream_package_source) {
           yumrepo { 'docker':

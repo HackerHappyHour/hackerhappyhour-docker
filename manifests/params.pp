@@ -38,21 +38,6 @@ class docker::params {
   $proxy                             = undef
   $no_proxy                          = undef
   $execdriver                        = undef
-  $storage_driver                    = undef
-  $dm_basesize                       = undef
-  $dm_fs                             = undef
-  $dm_mkfsarg                        = undef
-  $dm_mountopt                       = undef
-  $dm_blocksize                      = undef
-  $dm_loopdatasize                   = undef
-  $dm_loopmetadatasize               = undef
-  $dm_datadev                        = undef
-  $dm_metadatadev                    = undef
-  $dm_thinpooldev                    = undef
-  $dm_use_deferred_removal           = undef
-  $dm_use_deferred_deletion          = undef
-  $dm_blkdiscard                     = undef
-  $dm_override_udev_sync_check       = undef
   $manage_package                    = true
   $package_source                    = undef
   $manage_kernel                     = true
@@ -61,17 +46,6 @@ class docker::params {
   $docker_command_default            = 'docker'
   $docker_group_default              = 'docker'
   $daemon_subcommand                 = undef
-  $storage_devs                      = undef
-  $storage_vg                        = undef
-  $storage_root_size                 = undef
-  $storage_data_size                 = undef
-  $storage_min_data_size             = undef
-  $storage_chunk_size                = undef
-  $storage_growpart                  = undef
-  $storage_auto_extend_pool          = undef
-  $storage_pool_autoextend_threshold = undef
-  $storage_pool_autoextend_percent   = undef
-  $storage_config_template           = 'docker/etc/sysconfig/docker-storage.erb'
   $compose_image                     = 'docker/compose:1.16.1'
   $compose_path              = '/usr/local/bin/docker-compose'
 
@@ -88,7 +62,6 @@ class docker::params {
           $package_release = "ubuntu-${::lsbdistcodename}"
           if (versioncmp($::operatingsystemrelease, '15.04') >= 0) {
             $service_provider        = 'systemd'
-            $storage_config          = '/etc/default/docker-storage'
             $service_config_template = 'docker/etc/sysconfig/docker.systemd.erb'
             $service_overrides_template = 'docker/etc/systemd/system/docker.service.d/service-overrides-debian.conf.erb'
             $service_hasstatus       = true
@@ -100,14 +73,12 @@ class docker::params {
             $service_provider        = 'upstart'
             $service_hasstatus       = true
             $service_hasrestart      = false
-            $storage_config          = undef
           }
         }
         default: {
           $package_release = "debian-${::lsbdistcodename}"
           if (versioncmp($::operatingsystemmajrelease, '8') >= 0) {
             $service_provider           = 'systemd'
-            $storage_config             = '/etc/default/docker-storage'
             $service_config_template    = 'docker/etc/sysconfig/docker.systemd.erb'
             $service_overrides_template = 'docker/etc/systemd/system/docker.service.d/service-overrides-debian.conf.erb'
             $service_hasstatus          = true
@@ -115,7 +86,6 @@ class docker::params {
             include docker::systemd_reload
           } else {
             $service_provider           = undef
-            $storage_config             = undef
             $service_config_template    = 'docker/etc/default/docker.erb'
             $service_overrides_template = undef
             $service_hasstatus          = undef
@@ -136,7 +106,6 @@ class docker::params {
       $repo_opt = undef
       $nowarn_kernel = false
       $service_config = undef
-      $storage_setup_file = undef
 
       $package_cs_source_location = 'http://packages.docker.com/1.9/apt/repo'
       $package_cs_key_source = 'https://packages.docker.com/1.9/apt/gpg'
@@ -155,8 +124,6 @@ class docker::params {
     }
     'RedHat' : {
       $service_config = '/etc/sysconfig/docker'
-      $storage_config = '/etc/sysconfig/docker-storage'
-      $storage_setup_file = '/etc/sysconfig/docker-storage-setup'
       $service_hasstatus  = true
       $service_hasrestart = true
 
@@ -266,8 +233,6 @@ class docker::params {
       $service_hasrestart = true
       $service_config = '/etc/conf.d/docker'
       $service_config_template = 'docker/etc/conf.d/docker.erb'
-      $storage_config = undef
-      $storage_setup_file = undef
       $pin_upstream_package_source = undef
       $apt_source_pin_level = undef
     }
@@ -294,8 +259,6 @@ class docker::params {
       $service_hasrestart = true
       $service_config = '/etc/conf.d/docker'
       $service_config_template = 'docker/etc/conf.d/docker.gentoo.erb'
-      $storage_config = undef
-      $storage_setup_file = undef
       $pin_upstream_package_source = undef
       $apt_source_pin_level = undef
     }
@@ -321,8 +284,6 @@ class docker::params {
       $repo_opt = undef
       $nowarn_kernel = false
       $service_config = undef
-      $storage_config = undef
-      $storage_setup_file = undef
       $service_config_template = undef
       $pin_upstream_package_source = undef
       $apt_source_pin_level = undef
@@ -338,7 +299,7 @@ class docker::params {
       'Ubuntu' => ['cgroup-lite', 'apparmor'],
       default  => [],
     },
-    'RedHat' => ['device-mapper'],
+    'RedHat' => ['device-mapper', 'container-storage-setup'],
     default  => [],
   }
 

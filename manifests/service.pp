@@ -67,36 +67,8 @@ class docker::service (
   $execdriver                        = $docker::execdriver,
   $bip                               = $docker::bip,
   $mtu                               = $docker::mtu,
-  $storage_driver                    = $docker::storage_driver,
-  $dm_basesize                       = $docker::dm_basesize,
-  $dm_fs                             = $docker::dm_fs,
-  $dm_mkfsarg                        = $docker::dm_mkfsarg,
-  $dm_mountopt                       = $docker::dm_mountopt,
-  $dm_blocksize                      = $docker::dm_blocksize,
-  $dm_loopdatasize                   = $docker::dm_loopdatasize,
-  $dm_loopmetadatasize               = $docker::dm_loopmetadatasize,
-  $dm_datadev                        = $docker::dm_datadev,
-  $dm_metadatadev                    = $docker::dm_metadatadev,
   $tmp_dir                           = $docker::tmp_dir,
   $nowarn_kernel                     = $docker::nowarn_kernel,
-  $dm_thinpooldev                    = $docker::dm_thinpooldev,
-  $dm_use_deferred_removal           = $docker::dm_use_deferred_removal,
-  $dm_use_deferred_deletion          = $docker::dm_use_deferred_deletion,
-  $dm_blkdiscard                     = $docker::dm_blkdiscard,
-  $dm_override_udev_sync_check       = $docker::dm_override_udev_sync_check,
-  $storage_devs                      = $docker::storage_devs,
-  $storage_vg                        = $docker::storage_vg,
-  $storage_root_size                 = $docker::storage_root_size,
-  $storage_data_size                 = $docker::storage_data_size,
-  $storage_min_data_size             = $docker::storage_min_data_size,
-  $storage_chunk_size                = $docker::storage_chunk_size,
-  $storage_growpart                  = $docker::storage_growpart,
-  $storage_auto_extend_pool          = $docker::storage_auto_extend_pool,
-  $storage_pool_autoextend_threshold = $docker::storage_pool_autoextend_threshold,
-  $storage_pool_autoextend_percent   = $docker::storage_pool_autoextend_percent,
-  $storage_config                    = $docker::storage_config,
-  $storage_config_template           = $docker::storage_config_template,
-  $storage_setup_file                = $docker::storage_setup_file,
   $service_provider                  = $docker::service_provider,
   $service_config                    = $docker::service_config,
   $service_config_template           = $docker::service_config_template,
@@ -109,6 +81,7 @@ class docker::service (
   $tls_cacert                        = $docker::tls_cacert,
   $tls_cert                          = $docker::tls_cert,
   $tls_key                           = $docker::tls_key,
+  $manage_storage                    = $docker::manage_storage,
 ) {
 
   unless $::osfamily =~ /(Debian|RedHat|Archlinux|Gentoo)/ {
@@ -132,16 +105,6 @@ class docker::service (
   $_manage_service = $manage_service ? {
     true    => Service['docker'],
     default => [],
-  }
-
-  if $::osfamily == 'RedHat' {
-    file { $storage_setup_file:
-      ensure  => present,
-      force   => true,
-      content => template('docker/etc/sysconfig/docker-storage-setup.erb'),
-      before  => $_manage_service,
-      notify  => $_manage_service,
-    }
   }
 
   case $service_provider {
@@ -176,21 +139,21 @@ class docker::service (
     default: {}
   }
 
-  if $storage_config {
-    file { $storage_config:
-      ensure  => present,
-      force   => true,
-      content => template($storage_config_template),
-      notify  => $_manage_service,
-    }
-  }
-
   if $_service_config {
     file { $_service_config:
       ensure  => present,
       force   => true,
       content => template($service_config_template),
       notify  => $_manage_service,
+    }
+  }
+
+  if $manage_storage {
+    service {'docker-storage-setup':
+      ensure => 'running',
+      name   => 'docker-storage-setup',
+      enable => true,
+      before => Service['docker']
     }
   }
 

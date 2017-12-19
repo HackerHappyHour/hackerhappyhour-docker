@@ -102,6 +102,14 @@ class docker::install {
         name     => $docker::package_name,
       }))
 
+      if ($docker::manage_storage and $docker::css_ensure != 'absent'){
+        ensure_resource('package', 'container-storage-setup', {
+          ensure  => $docker::css_ensure,
+          name    => $docker::css_name,
+          require => Package['docker']
+        })
+      }
+
     } else {
       ensure_resource('package', 'docker', merge($docker_hash, {
         ensure => $ensure,
