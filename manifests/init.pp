@@ -421,12 +421,14 @@ class docker(
   -> class { 'docker::container_storage': }
   -> class { 'docker::config': }
   ~> class { 'docker::service': }
+
   contain 'docker::repos'
   contain 'docker::install'
   contain 'docker::container_storage'
   contain 'docker::config'
   contain 'docker::service'
 
+  Class['docker::repos'] -> Class['docker::install'] -> Class['docker::config'] ~> Class['docker::service']
   Class['docker'] -> Docker::Registry <||> -> Docker::Image <||> -> Docker::Run <||>
   Class['docker'] -> Docker::Image <||> -> Docker::Run <||>
   Class['docker'] -> Docker::Run <||>
