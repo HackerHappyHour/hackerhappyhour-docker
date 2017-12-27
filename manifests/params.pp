@@ -26,6 +26,7 @@ class docker::params {
   $log_driver                        = undef
   $log_opt                           = []
   $selinux_enabled                   = undef
+  $selinux_dockersock_enabled        = undef
   $socket_group                      = undef
   $labels                            = []
   $service_state                     = running
