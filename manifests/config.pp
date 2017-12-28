@@ -11,7 +11,7 @@ class docker::config (
 
   docker::system_user { $docker::docker_users: }
 
-  if $::osfamily == 'RedHat' and $selinux_dockersock_enabled {
+  if $facts['os']['family'] == 'RedHat' and $selinux_dockersock_enabled {
 
     selinux::module { 'dockersock':
       ensure    => 'present',

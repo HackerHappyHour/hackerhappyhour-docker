@@ -295,7 +295,7 @@ class docker(
   $log_driver                        = $docker::params::log_driver,
   $log_opt                           = $docker::params::log_opt,
   $selinux_enabled                   = $docker::params::selinux_enabled,
-  $selinux_dockersock_enabled        = $docker::params::selinux_dockersock_enabled,
+  $selinux_dockersock_enabled        = false,
   $use_upstream_package_source       = $docker::params::use_upstream_package_source,
   $pin_upstream_package_source       = $docker::params::pin_upstream_package_source,
   $apt_source_pin_level              = $docker::params::apt_source_pin_level,
