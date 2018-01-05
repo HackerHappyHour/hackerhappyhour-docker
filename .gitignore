@@ -11,3 +11,4 @@ log
 Gemfile.lock
 coverage/*
 Dockerfile.override
+bin

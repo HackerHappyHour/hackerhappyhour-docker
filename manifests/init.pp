@@ -151,6 +151,12 @@
 #   support  the  BTRFS storage driver.
 #   Valid values: true, false
 #
+# [*selinux_dockersock_enabled*]
+#   Allow containers to access docker.sock under Fedora or RHEL with selinux enabled.
+#   Default is false.
+#   See https://github.com/dpw/selinux-dockersock for more information.
+#   Valid values: true, false
+#
 # [*use_upstream_package_source*]
 #   Whether or not to use the upstream package source.
 #   If you run your own package mirror, you may set this
@@ -289,6 +295,7 @@ class docker(
   $log_driver                        = $docker::params::log_driver,
   $log_opt                           = $docker::params::log_opt,
   $selinux_enabled                   = $docker::params::selinux_enabled,
+  $selinux_dockersock_enabled        = false,
   $use_upstream_package_source       = $docker::params::use_upstream_package_source,
   $pin_upstream_package_source       = $docker::params::pin_upstream_package_source,
   $apt_source_pin_level              = $docker::params::apt_source_pin_level,
@@ -405,6 +412,14 @@ class docker(
 
   if $selinux_enabled {
     validate_re($selinux_enabled, '^(true|false)$', 'selinux_enabled must be true or false')
+  }
+
+  if $selinux_dockersock_enabled {
+    validate_re($selinux_dockersock_enabled, '^(true|false)$', 'selinux_dockersock must be true or false')
+
+    if(!$selinux_enabled) {
+      fail('selinux_enabled property must be set to true when selinux_dockersock_enabled is true')
+    }
   }
 
   if($tls_enable) {
