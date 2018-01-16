@@ -12,7 +12,7 @@ class docker::config (
   docker::system_user { $docker::docker_users: }
 
   if $facts['os']['family'] == 'RedHat' and $selinux_dockersock_enabled {
-
+    include selinux
     selinux::module { 'dockersock':
       ensure    => 'present',
       source_te => 'puppet:///modules/docker/dockersock.te',
