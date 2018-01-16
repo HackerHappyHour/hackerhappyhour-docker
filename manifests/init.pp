@@ -294,8 +294,8 @@ class docker(
   $log_level                         = $docker::params::log_level,
   $log_driver                        = $docker::params::log_driver,
   $log_opt                           = $docker::params::log_opt,
-  $selinux_enabled                   = $docker::params::selinux_enabled,
-  $selinux_dockersock_enabled        = false,
+  Boolean $selinux_enabled            = false,
+  Boolean $selinux_dockersock_enabled = false,
   $use_upstream_package_source       = $docker::params::use_upstream_package_source,
   $pin_upstream_package_source       = $docker::params::pin_upstream_package_source,
   $apt_source_pin_level              = $docker::params::apt_source_pin_level,
@@ -410,13 +410,7 @@ class docker(
                 'log_driver must be one of none, json-file, syslog, journald, gelf, fluentd or splunk')
   }
 
-  if $selinux_enabled {
-    validate_re($selinux_enabled, '^(true|false)$', 'selinux_enabled must be true or false')
-  }
-
   if $selinux_dockersock_enabled {
-    validate_re($selinux_dockersock_enabled, '^(true|false)$', 'selinux_dockersock must be true or false')
-
     if(!$selinux_enabled) {
       fail('selinux_enabled property must be set to true when selinux_dockersock_enabled is true')
     }
